@@ -53,6 +53,10 @@
 }
 
 /* Enlaces del menú. El rombo sustituye a los iconos. */
+/* .navitem — cada enlace del menu lateral.
+   .navitem.active marca en que pagina estas y se escribe A MANO en cada
+   archivo del panel: no hay JS que la calcule. Si agregas una pagina nueva
+   al menu, acuerdate de moverle la clase. */
 .navitem{
   display:flex; align-items:center; gap:12px;
   padding:11px 12px;
@@ -125,6 +129,9 @@
    3. TARJETAS DE RESUMEN
    ========================================================= */
 .kpi-grid{ margin-bottom:38px; }
+/* .kpi — tarjeta de indicador del panel (.n el numero, .l el rotulo).
+   Los valores estan escritos a mano en admin/index.html: no se calculan
+   desde el arreglo PRODUCTOS, asi que no se actualizan solos. */
 .kpi{
   height:100%;
   padding:24px;
@@ -211,12 +218,19 @@ td.acciones a.borrar:hover{ color:var(--rojo-claro); }
 .badge.ok{ border-color:var(--verde-claro); color:var(--verde-claro); }
 .badge.alerta{ border-color:var(--rojo-claro); color:var(--rojo-claro); }
 /* La rareza pinta su etiqueta con el color que llega en --tono */
+/* .badge.rareza — etiqueta de color de la tabla de productos.
+   Usa var(--tono), que le inyecta INLINE el script de admin/productos.html
+   (o el HTML fijo de admin/index.html). El fallback var(--borde) evita
+   que la etiqueta quede invisible si nadie define --tono. */
 .badge.rareza{ border-color:var(--tono, var(--borde)); color:var(--tono, var(--marfil-tenue)); }
 
 
 /* =========================================================
    5. PAGINACIÓN
    ========================================================= */
+/* .paginacion — DECORATIVA. Los botones no tienen ningun listener:
+   no paginan nada todavia. Si se conecta, el listener va en el inline
+   de admin/productos.html. */
 .paginacion{
   display:flex; gap:6px;
   justify-content:center;
