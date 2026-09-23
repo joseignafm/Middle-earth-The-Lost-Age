@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalle del objeto — Middle-earth: The Lost Age</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-erebor">
+
+<!-- =========================================================
+     FICHA DE UN OBJETO — se arma entera por JS desde la URL.
+       Carga  : js/productos.js -> js/carrito.js -> script inline del final
+       Entra de: productos.html (nombre de la tarjeta), detalle-producto.html
+                (bloque "Tambien en el mercado") y blog-detalle-2.html
+       Sale a : carrito.html · detalle-producto.html?id=N
+       Como sabe que objeto mostrar: lee ?id=N de la URL con URLSearchParams
+       y llama a buscarProducto(id). Si no hay id o no existe, cae en PRODUCTOS[0].
+       Enganches JS:
+         #bc-nombre     el nombre dentro de las migas de pan
+         #detalle       fila VACIA en el HTML; pintarDetalle() inyecta toda la ficha
+         #relacionados  fila VACIA; la llena pintarRelacionados() con 5 objetos
+       OJO: #btn-menos, #cantidad, #btn-mas y #btn-add NO estan en este archivo.
+       Los crea pintarDetalle() dentro de su template, y por eso sus addEventListener
+       se registran DESPUES de inyectar el HTML: antes no existen en el DOM.
+       Para cambiar el layout de la ficha se edita el template del inline, no el HTML.
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">Erebor</span>
+    <span class="cinta-sub">La Montaña Solitaria · Salas del tesoro</span>
+  </div>
+</div>
+
+<main>
+
+  <div class="container-xxl px-3 px-lg-4">
+    <p class="migas">
+      <a href="index.html">Inicio</a> <span>/</span>
+      <a href="productos.html">Mercado</a> <span>/</span>
+      <span id="bc-nombre">Objeto</span>
+    </p>
+
+    <!-- Fila VACIA a proposito: pintarDetalle() le inyecta toda la ficha
+         (galeria, precio, requisitos, bonos y caja de compra) como HTML. -->
+    <div class="row g-5 pb-4" id="detalle"></div>
+  </div>
+
+  <!-- RELACIONADOS: tambien vacio en el HTML; lo llena pintarRelacionados()
+       con 5 objetos distintos del actual. -->
+
+  <section class="section sin-filete">
+    <div class="container-xxl px-3 px-lg-4">
+      <h2>También en el mercado</h2>
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3 mt-1" id="relacionados"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+
+<!-- INLINE de esta pagina. Depende de productos.js (buscarProducto,
+     claseRareza, formatearOro, inicialObjeto) y de carrito.js
+     (agregarAlCarrito), por eso va al final de los tres. -->
+<script>
+  /* ?id=N de la URL -> que objeto mostrar. Si no viene o no existe,
+     cae en PRODUCTOS[0] para que la pagina nunca quede en blanco. */
+  const params = new URLSearchParams(window.location.search);
+  const idPedido = Number(params.get('id')) || 1;
+  const producto = buscarProducto(idPedido) || PRODUCTOS[0];
+
+  let cantidadActual = 1;
+
+  function pintarDetalle(){
+    document.title = producto.nombre + ' — Middle-earth: The Lost Age';
+    document.getElementById('bc-nombre').textContent = producto.nombre;
+
+    const color = claseRareza(producto.rareza);
+    const stockTexto = producto.stock === null
+      ? 'Sin límite'
+      : producto.stock + ' disponibles';
+
+    document.getElementById('detalle').innerHTML = `
+      <div class="col-lg-5" style="--rareza:${color}">
+        <div class="gallery-main"><span>${inicialObjeto(producto)}</span></div>
+        <div class="gallery-thumbs">
+          <div class="active"><span>${producto.codigo.slice(0,3)}</span></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+
+      <div class="col-lg-7" style="--rareza:${color}">
+        <span class="rareza-tag">${nombreRareza(producto.rareza)}</span>
+        <h1>${producto.nombre}</h1>
+        <div class="price"><span class="coin"></span> ${formatearOro(producto.precio)}</div>
+
+        <p class="flavor">${producto.descripcion}</p>
+
+        <div class="requisitos row g-3">
+          <div class="col-6 col-md-3"><span>Nivel mínimo</span><strong>${producto.nivelMinimo}</strong></div>
+          <div class="col-6 col-md-3"><span>Raza requerida</span><strong>${producto.razaRequerida}</strong></div>
+          <div class="col-6 col-md-3"><span>Peso</span><strong>${producto.peso} kg</strong></div>
+          <div class="col-6 col-md-3"><span>Disponibles</span><strong>${stockTexto}</strong></div>
+        </div>
+
+        <div class="stats">
+          <h3>Bonificaciones</h3>
+          <div class="stat-row"><span>Fuerza</span><span>+${producto.bonos.fuerza}</span></div>
+          <div class="stat-row"><span>Destreza</span><span>+${producto.bonos.destreza}</span></div>
+          <div class="stat-row"><span>Sabiduría</span><span>+${producto.bonos.sabiduria}</span></div>
+          <div class="stat-row"><span>Vitalidad</span><span>+${producto.bonos.vitalidad}</span></div>
+        </div>
+
+        <div class="buy-box">
+          <div class="qty">
+            <button id="btn-menos" type="button" aria-label="Quitar uno">−</button>
+            <input class="form-control" type="text" id="cantidad" value="1" readonly aria-label="Cantidad">
+            <button id="btn-mas" type="button" aria-label="Añadir uno">+</button>
+          </div>
+          <button class="btn btn-oro flex-grow-1" id="btn-add" type="button">Añadir al carrito</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('btn-menos').addEventListener('click', () => {
+      cantidadActual = Math.max(1, cantidadActual - 1);
+      document.getElementById('cantidad').value = cantidadActual;
+    });
+
+    document.getElementById('btn-mas').addEventListener('click', () => {
+      cantidadActual++;
+      document.getElementById('cantidad').value = cantidadActual;
+    });
+
+    document.getElementById('btn-add').addEventListener('click', () => {
+      agregarAlCarrito(producto.id, cantidadActual);
+      const btn = document.getElementById('btn-add');
+      btn.textContent = 'Añadido';
+      setTimeout(() => { btn.textContent = 'Añadir al carrito'; }, 900);
+    });
+  }
+
+  function pintarRelacionados(){
+    const otros = PRODUCTOS.filter(p => p.id !== producto.id).slice(0, 5);
+    document.getElementById('relacionados').innerHTML = otros.map(p => `
+      <div class="col">
+        <a class="mini h-100" href="detalle-producto.html?id=${p.id}">
+          <span class="mini-marca">${inicialObjeto(p)}</span>
+          ${p.nombre}
+        </a>
+      </div>
+    `).join('');
+  }
+
+  pintarDetalle();
+  pintarRelacionados();
+</script>
+
+</body>
+</html>

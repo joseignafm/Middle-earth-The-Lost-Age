@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Middle-earth: The Lost Age — Juego de rol de fantasía épica</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-rivendel">
+
+<!-- =========================================================
+     PORTADA — presentacion del juego. Es la puerta de entrada del sitio.
+       Carga  : vendor/fonts · vendor/bootstrap · css/styles.css
+                js/productos.js + js/carrito.js (solo para que el contador
+                .cart-count del header muestre el numero correcto)
+       Entra de: <BASE>/index.html (redirector) y del logo de todas las paginas
+       Sale a : productos.html · registro.html · blog.html · nosotros.html
+                contacto.html · login.html · carrito.html · admin/index.html
+       Contenido 100% estatico: ningun bloque de esta pagina lo pinta el JS.
+       Enganches JS: solo .cart-count (lo actualiza actualizarContador() de carrito.js)
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">Rivendel</span>
+    <span class="cinta-sub">Casa de Elrond · El Último Hogar</span>
+  </div>
+</div>
+
+<main>
+
+  <!-- ===== HERO: primer impacto. .hero-datos es un <dl> (lista de
+       definiciones): cada cifra es un <dt> y su rotulo un <dd>. ===== -->
+  <section class="hero">
+    <div class="container-xxl px-3 px-lg-4">
+      <div class="row g-5 align-items-center">
+
+        <div class="col-lg-7">
+          <p class="eyebrow">Juego de rol de fantasía épica</p>
+          <h1>Forja héroes.<br>Cruza el reino.<br><em>Sobrevive a la Última Edad.</em></h1>
+          <p class="hero-texto">Crea tus propios héroes, elige su linaje y llévalos por bosques, mazmorras y volcanes. Aquí la muerte cuesta oro, posesiones y tiempo — y a veces solo la mano de otro héroe puede devolverte al mundo.</p>
+          <div class="btn-row">
+            <a class="btn btn-oro" href="registro.html">Crear tu héroe</a>
+            <a class="btn btn-linea" href="#mundo">Conocer el reino</a>
+          </div>
+
+          <dl class="hero-datos">
+            <div><dt>6</dt><dd>linajes jugables</dd></div>
+            <div><dt>5</dt><dd>grados de rareza</dd></div>
+            <div><dt>0</dt><dd>dinero real</dd></div>
+          </dl>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="art-placeholder">Ilustración del reino<br>(placeholder de arte)</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CICLO DEL HEROE: 4 tarjetas .pillar.
+       row-cols-1 / -sm-2 / -lg-4 = 1 columna en movil, 2 en tablet,
+       4 en escritorio. Es Bootstrap quien hace ese salto, no styles.css. ===== -->
+  <section class="section" id="mundo">
+    <div class="container-xxl px-3 px-lg-4">
+      <p class="eyebrow">El ciclo del héroe</p>
+      <h2>Cuatro formas de crecer</h2>
+      <p class="lede">Ninguna ruta es obligatoria. La mayoría de los jugadores combina varias, y el estilo de juego nace de esa mezcla.</p>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mt-1">
+        <div class="col">
+          <article class="pillar">
+            <span class="pilar-num">01</span>
+            <h3>Combatir</h3>
+            <p>Goblins, trolls, nazgûl y dragones. Ganas experiencia, oro y botín — pero una derrota mata a tu héroe.</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="pillar">
+            <span class="pilar-num">02</span>
+            <h3>Explorar</h3>
+            <p>Bosques, mazmorras, desiertos y volcanes. Cada región exige un nivel mínimo y esconde criaturas propias.</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="pillar">
+            <span class="pilar-num">03</span>
+            <h3>Emprender misiones</h3>
+            <p>Objetivos con recompensa conocida de antemano, en cuatro grados de dificultad. Repetirlas rinde cada vez menos.</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="pillar">
+            <span class="pilar-num">04</span>
+            <h3>Fortalecerse</h3>
+            <p>Equipa armas y armaduras, aprende poderes. Solo cuatro habilidades a la vez: elegir bien es parte del juego.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEIS LINAJES: 6 tarjetas .raza estaticas.
+       Agregar una raza = copiar un <div class="col"> completo. ===== -->
+  <section class="section" id="razas">
+    <div class="container-xxl px-3 px-lg-4">
+      <p class="eyebrow">Seis linajes</p>
+      <h2>La sangre define el comienzo</h2>
+      <p class="lede">La raza que elijas marca las bonificaciones de tu héroe y su habilidad innata. Un enano seguirá siendo más resistente que un hobbit en el nivel 50, igual que lo era en el nivel 1.</p>
+
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3 mt-1">
+        <div class="col">
+          <article class="raza">
+            <div class="retrato"><span>EL</span></div>
+            <h3>Élfico</h3>
+            <p class="bono">+DES +SAB</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="raza">
+            <div class="retrato"><span>EN</span></div>
+            <h3>Enano</h3>
+            <p class="bono">+FUE +VIT</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="raza">
+            <div class="retrato"><span>HB</span></div>
+            <h3>Hobbit</h3>
+            <p class="bono">+DES</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="raza">
+            <div class="retrato"><span>HM</span></div>
+            <h3>Hombre</h3>
+            <p class="bono">Equilibrado</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="raza">
+            <div class="retrato"><span>OR</span></div>
+            <h3>Orco</h3>
+            <p class="bono">+FUE</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="raza">
+            <div class="retrato"><span>IS</span></div>
+            <h3>Istari</h3>
+            <p class="bono">+SAB</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FRANJA DEL MERCADO: cada .gema usa una variable CSS de rareza
+       (r-comun, r-inusual, r-raro, r-epico, r-legendario; en el CSS llevan
+       doble guion delante). Son las mismas que devuelve claseRareza() de
+       js/productos.js para colorear las tarjetas del catalogo. ===== -->
+  <section class="section" id="mercado">
+    <div class="container-xxl px-3 px-lg-4">
+      <div class="row g-5 align-items-center">
+
+        <div class="col-lg-6">
+          <p class="eyebrow">El mercado del reino</p>
+          <h2>El oro que ganas<br>tiene dónde gastarse</h2>
+          <p class="lede">Objetos, poderes anticipados y ampliaciones de capacidad. Nada de dinero real: solo el oro que tu héroe consiguió peleando y cumpliendo encargos.</p>
+
+          <div class="rarezas">
+            <span class="rareza-item"><span class="gema comun"></span> Común</span>
+            <span class="rareza-item"><span class="gema inusual"></span> Inusual</span>
+            <span class="rareza-item"><span class="gema raro"></span> Raro</span>
+            <span class="rareza-item"><span class="gema epico"></span> Épico</span>
+            <span class="rareza-item"><span class="gema legendario"></span> Legendario</span>
+          </div>
+
+          <div class="btn-row">
+            <a class="btn btn-oro" href="productos.html">Entrar al mercado</a>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="aviso">
+            <p><b>Nada es exclusivo del mercado.</b> Todo lo que puedes comprar también se gana jugando, como recompensa de misión o botín de combate. El mercado existe para cambiar oro por tiempo, no para reservar ventajas a quien más acumula.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+
+</body>
+</html>

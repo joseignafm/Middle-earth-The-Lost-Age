@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Mercado — Middle-earth: The Lost Age</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-erebor">
+
+<!-- =========================================================
+     MERCADO — listado del catalogo con filtros combinados.
+       Carga  : js/productos.js -> js/carrito.js -> script inline del final
+       Entra de: navbar (Mercado) e index.html (boton "Entrar al mercado")
+       Sale a : detalle-producto.html?id=N (al pinchar el nombre de una tarjeta)
+       Enganches JS:
+         #grilla-productos  contenedor vacio; lo llena renderProductos() de productos.js
+         #sin-resultados    aviso que se muestra cuando el filtro no deja nada
+         #filtros-tipo      grupo de botones por tipo de objeto
+         #filtros-rareza    grupo de botones por rareza
+         .filter-btn[data-filtro][data-valor]  el inline lee estos data-* para filtrar
+         .add-btn[data-id]  lo crea productos.js dentro de cada tarjeta
+       Si renombras un id de aqui, hay que cambiarlo tambien en el inline del final.
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">Erebor</span>
+    <span class="cinta-sub">La Montaña Solitaria · Salas del tesoro</span>
+  </div>
+</div>
+
+<main>
+
+  <div class="page-head">
+    <div class="container-xxl px-3 px-lg-4">
+      <p class="eyebrow">El mercado del reino</p>
+      <h1>Mercado</h1>
+      <p class="lede">Todo lo que ves aquí también puede ganarse jugando. Los precios se calculan según rareza y nivel — nada se pone a mano.</p>
+    </div>
+  </div>
+
+  <div class="container-xxl px-3 px-lg-4">
+
+    <!-- FILTROS: dos grupos que se distinguen por data-filtro, no por
+         clases distintas. El inline del final lee data-filtro (que grupo)
+         y data-valor (que valor) de cada boton. La clase .active marca
+         el boton elegido dentro de su grupo. -->
+    <div class="filtros">
+      <div class="filtros-grupo" id="filtros-tipo">
+        <span class="filtros-titulo">Tipo</span>
+        <button class="filter-btn active" data-filtro="tipo" data-valor="TODOS">Todos</button>
+        <button class="filter-btn" data-filtro="tipo" data-valor="ARMA">Armas</button>
+        <button class="filter-btn" data-filtro="tipo" data-valor="ARMADURA">Armaduras</button>
+        <button class="filter-btn" data-filtro="tipo" data-valor="ESCUDO">Escudos</button>
+        <button class="filter-btn" data-filtro="tipo" data-valor="ACCESORIO">Accesorios</button>
+        <button class="filter-btn" data-filtro="tipo" data-valor="POCION">Pociones</button>
+        <button class="filter-btn" data-filtro="tipo" data-valor="PODER">Poderes</button>
+        <button class="filter-btn" data-filtro="tipo" data-valor="MEJORA">Mejoras</button>
+      </div>
+
+      <div class="filtros-grupo" id="filtros-rareza">
+        <span class="filtros-titulo">Rareza</span>
+        <button class="filter-btn active" data-filtro="rareza" data-valor="TODOS">Toda rareza</button>
+        <button class="filter-btn" data-filtro="rareza" data-valor="COMUN">Común</button>
+        <button class="filter-btn" data-filtro="rareza" data-valor="INUSUAL">Inusual</button>
+        <button class="filter-btn" data-filtro="rareza" data-valor="RARO">Raro</button>
+        <button class="filter-btn" data-filtro="rareza" data-valor="EPICO">Épico</button>
+        <button class="filter-btn" data-filtro="rareza" data-valor="LEGENDARIO">Legendario</button>
+      </div>
+    </div>
+
+    <!-- productos.js llena esta fila; cada objeto llega envuelto en su .col -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 g-4 pb-5" id="grilla-productos"></div>
+
+    <!-- Nace oculto con style="display:none". renderProductos() lo muestra
+         cuando la lista filtrada queda vacia. -->
+    <p class="empty-state" id="sin-resultados" style="display:none;">
+      Ningún objeto del reino coincide con esa búsqueda.
+    </p>
+
+  </div>
+
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+
+<!-- INLINE de esta pagina. Va DESPUES de productos.js porque usa PRODUCTOS
+     y renderProductos(); si se cargara antes, fallaria. -->
+<script>
+  /* Estado de los filtros. Empiezan en TODOS = sin filtrar.
+     Son dos variables sueltas: no hay estado global ni framework. */
+  let filtroTipo = 'TODOS';
+  let filtroRareza = 'TODOS';
+
+  function aplicarFiltros(){
+    const lista = PRODUCTOS.filter(p => {
+      const okTipo   = filtroTipo === 'TODOS'   || p.tipo === filtroTipo;
+      const okRareza = filtroRareza === 'TODOS' || p.rareza === filtroRareza;
+      return okTipo && okRareza;
+    });
+    renderProductos(lista, 'grilla-productos');
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const grupo = btn.dataset.filtro;
+      const selector = '.filter-btn[data-filtro="' + grupo + '"]';
+      document.querySelectorAll(selector).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (grupo === 'tipo')   filtroTipo = btn.dataset.valor;
+      if (grupo === 'rareza') filtroRareza = btn.dataset.valor;
+
+      aplicarFiltros();
+    });
+  });
+
+  aplicarFiltros();
+</script>
+
+</body>
+</html>
