@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Productos — Panel del Maestro</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="region-orthanc">
+
+<!-- =========================================================
+     admin/productos.html — MANTENEDOR DE PRODUCTOS — listado del catalogo.
+       Carga  : ../js/productos.js -> script inline del final
+       Entra de: menu lateral del panel
+       Sale a : producto-nuevo.html · producto-editar.html?id=N
+       Enganches JS:
+         #tabla-productos  <tbody> VACIO; el inline lo llena recorriendo PRODUCTOS.
+                           Es el MISMO arreglo que usa la tienda publica, no una copia:
+                           editar js/productos.js cambia las dos vistas a la vez.
+       El enlace "borrar" llama a confirmarBorrado(): muestra un alert y devuelve
+       false para que el href="#" no navegue. No borra nada: no hay backend.
+       La paginacion (« 1 2 ») es decorativa: esos botones no tienen listener.
+     ========================================================= -->
+
+<div class="admin-layout">
+
+  <!-- ===== MENU LATERAL DEL PANEL =====
+       Bloque IDENTICO en las 7 paginas de admin.
+         .rail            columna fija del panel (ver css/admin.css)
+         .offcanvas-lg    Bootstrap: bajo 992px deja de ser columna fija y
+                          pasa a ser un panel deslizante; sobre 992px se ve
+                          siempre y el boton "Menu del panel" queda oculto
+         #rail-admin      lo abre el boton via data-bs-target="#rail-admin"
+         .navitem.active  marca en que pagina estas (se pone a mano por archivo)
+       ==================================== -->
+  <nav class="rail offcanvas-lg offcanvas-start" tabindex="-1" id="rail-admin" aria-label="Menú de administración">
+    <div class="rail-brand">
+      <p class="rail-mark">Middle-earth: the lost age</p>
+      <h1>Panel del Maestro</h1>
+      <p class="sub">administración del reino</p>
+    </div>
+
+    <a class="navitem" href="index.html">Inicio</a>
+
+    <p class="rail-group">Catálogo</p>
+    <a class="navitem active" href="productos.html">Productos</a>
+    <a class="navitem" href="producto-nuevo.html">Nuevo producto</a>
+
+    <p class="rail-group">Personas</p>
+    <a class="navitem" href="usuarios.html">Usuarios</a>
+    <a class="navitem" href="usuario-nuevo.html">Nuevo usuario</a>
+
+    <div class="rail-foot">
+      <a class="navitem" href="../index.html">Volver a la tienda</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- Acciones del panel: el menú lateral solo aparece bajo 992px
+         (.d-lg-none); el botón verde de salida se ve siempre. -->
+    <div class="admin-acciones">
+      <button class="btn btn-linea btn-sm d-lg-none" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#rail-admin" aria-controls="rail-admin">
+        Menú del panel
+      </button>
+      <a class="btn btn-verde btn-sm" href="../index.html">← Volver a la tienda</a>
+    </div>
+
+
+    <div class="admin-top">
+      <div>
+        <p class="eyebrow">Mantenedor</p>
+        <h1>Productos</h1>
+        <p class="lede">Todo el catálogo del mercado del reino.</p>
+      </div>
+      <a class="btn btn-oro" href="producto-nuevo.html">Nuevo producto</a>
+    </div>
+
+    <div class="table-card">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Rareza</th>
+            <th class="num">Precio</th>
+            <th class="num">Stock</th>
+            <th class="acciones">Acciones</th>
+          </tr>
+        </thead>
+        <!-- VACIO: el inline del final lo llena desde PRODUCTOS. -->
+        <tbody id="tabla-productos"></tbody>
+      </table>
+
+      <!-- Paginacion DECORATIVA: sin listeners, no pagina nada todavia. -->
+      <div class="paginacion">
+        <button type="button">«</button>
+        <button type="button" class="active">1</button>
+        <button type="button">2</button>
+        <button type="button">»</button>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="../js/productos.js"></script>
+
+<!-- INLINE. Va DESPUES de ../js/productos.js porque usa PRODUCTOS
+     y formatearOro(). -->
+<script>
+  /* Mapa rareza -> variable CSS de color. Hace lo mismo que claseRareza()
+     de productos.js; se repite aqui porque la tabla usa la variable --tono
+     del badge en vez de --rareza de la tarjeta. */
+  const colores = {
+    COMUN:'var(--r-comun)', INUSUAL:'var(--r-inusual)', RARO:'var(--r-raro)',
+    EPICO:'var(--r-epico)', LEGENDARIO:'var(--r-legendario)'
+  };
+
+  document.getElementById('tabla-productos').innerHTML = PRODUCTOS.map(p => `
+    <tr>
+      <td class="mono">${p.codigo}</td>
+      <td>${p.nombre}</td>
+      <td>${p.tipo}</td>
+      <td><span class="badge rareza" style="--tono:${colores[p.rareza]}">${p.rareza}</span></td>
+      <td class="num">${formatearOro(p.precio)}</td>
+      <td class="num">${p.stock === null ? '∞' : p.stock}</td>
+      <td class="acciones">
+        <a href="producto-editar.html?id=${p.id}">editar</a>
+        <a href="#" class="borrar" onclick="return confirmarBorrado('${p.nombre}')">borrar</a>
+      </td>
+    </tr>
+  `).join('');
+
+  /* confirmarBorrado(nombre) -> siempre false.
+     El false es lo importante: lo devuelve el onclick del <a href="#">,
+     asi el enlace no navega. No borra nada porque no hay backend. */
+  function confirmarBorrado(nombre){
+    alert('En esta etapa el borrado no está conectado. Se eliminaría: ' + nombre);
+    return false;
+  }
+</script>
+
+</body>
+</html>

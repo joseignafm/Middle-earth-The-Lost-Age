@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar producto — Panel del Maestro</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="region-orthanc">
+
+<!-- =========================================================
+     admin/producto-editar.html — EDICION DE PRODUCTO — mismo formulario que el alta, pero precargado.
+       Carga  : ../js/productos.js -> ../js/validaciones.js -> script inline
+       Entra de: enlace "editar" de cada fila de productos.html (producto-editar.html?id=N)
+       Usa EL MISMO id #form-producto que producto-nuevo.html: las reglas las aplica
+       la misma funcion iniciarFormProducto(). Aqui no se repite ninguna validacion.
+       Lo unico propio es el inline del final, que lee ?id=N, llama a buscarProducto()
+       y asigna .value campo por campo.
+       IMPORTANTE: si agregas un campo al formulario de producto, hay que agregar
+       tambien su linea de precarga en ese inline, o el campo llegara vacio.
+     ========================================================= -->
+
+<div class="admin-layout">
+
+  <!-- ===== MENU LATERAL DEL PANEL =====
+       Bloque IDENTICO en las 7 paginas de admin.
+         .rail            columna fija del panel (ver css/admin.css)
+         .offcanvas-lg    Bootstrap: bajo 992px deja de ser columna fija y
+                          pasa a ser un panel deslizante; sobre 992px se ve
+                          siempre y el boton "Menu del panel" queda oculto
+         #rail-admin      lo abre el boton via data-bs-target="#rail-admin"
+         .navitem.active  marca en que pagina estas (se pone a mano por archivo)
+       ==================================== -->
+  <nav class="rail offcanvas-lg offcanvas-start" tabindex="-1" id="rail-admin" aria-label="Menú de administración">
+    <div class="rail-brand">
+      <p class="rail-mark">Middle-earth: the lost age</p>
+      <h1>Panel del Maestro</h1>
+      <p class="sub">administración del reino</p>
+    </div>
+
+    <a class="navitem" href="index.html">Inicio</a>
+
+    <p class="rail-group">Catálogo</p>
+    <a class="navitem active" href="productos.html">Productos</a>
+    <a class="navitem" href="producto-nuevo.html">Nuevo producto</a>
+
+    <p class="rail-group">Personas</p>
+    <a class="navitem" href="usuarios.html">Usuarios</a>
+    <a class="navitem" href="usuario-nuevo.html">Nuevo usuario</a>
+
+    <div class="rail-foot">
+      <a class="navitem" href="../index.html">Volver a la tienda</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- Acciones del panel: el menú lateral solo aparece bajo 992px
+         (.d-lg-none); el botón verde de salida se ve siempre. -->
+    <div class="admin-acciones">
+      <button class="btn btn-linea btn-sm d-lg-none" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#rail-admin" aria-controls="rail-admin">
+        Menú del panel
+      </button>
+      <a class="btn btn-verde btn-sm" href="../index.html">← Volver a la tienda</a>
+    </div>
+
+
+    <div class="admin-top">
+      <div>
+        <p class="eyebrow">Mantenedor de productos</p>
+        <h1>Editar producto</h1>
+        <p class="lede">Modifica los datos del objeto seleccionado en el catálogo.</p>
+      </div>
+      <a class="btn btn-linea btn-sm" href="productos.html">Volver al listado</a>
+    </div>
+
+    <div class="form-card">
+
+      <div class="form-alert" id="alerta"></div>
+      <!-- Aviso vivo de stock critico: se recalcula en cada tecla, no al enviar. -->
+            <div class="form-alert" id="aviso-stock"></div>
+
+      <form id="form-producto" novalidate>
+
+        <div class="field">
+          <label class="form-label" for="codigo">Código del producto <span class="req">*</span></label>
+          <input class="form-control" type="text" id="codigo" name="codigo" placeholder="ARM-LEG-001">
+          <span class="form-text hint">Mínimo 3 caracteres</span>
+          <span class="error-msg" id="err-codigo"></span>
+        </div>
+
+        <div class="field">
+          <label class="form-label" for="nombre">Nombre <span class="req">*</span></label>
+          <input class="form-control" type="text" id="nombre" name="nombre" maxlength="100">
+          <span class="form-text hint">Máx. 100 caracteres</span>
+          <span class="error-msg" id="err-nombre"></span>
+        </div>
+
+        <div class="field">
+          <label class="form-label" for="descripcion">Descripción</label>
+          <textarea class="form-control" id="descripcion" name="descripcion" maxlength="500"></textarea>
+          <span class="form-text hint">Opcional · máx. 500 caracteres</span>
+          <span class="error-msg" id="err-descripcion"></span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="precio">Precio en oro <span class="req">*</span></label>
+            <input class="form-control" type="number" id="precio" name="precio" min="0" step="0.01">
+            <span class="form-text hint">0 se considera un objeto gratuito · admite decimales</span>
+            <span class="error-msg" id="err-precio"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="categoria">Categoría <span class="req">*</span></label>
+            <select class="form-select" id="categoria" name="categoria">
+              <option value="">-- Selecciona la categoría --</option>
+              <option value="ARMA">Arma</option>
+              <option value="ARMADURA">Armadura</option>
+              <option value="ESCUDO">Escudo</option>
+              <option value="ACCESORIO">Accesorio</option>
+              <option value="POCION">Poción</option>
+              <option value="PODER">Poder</option>
+              <option value="MEJORA">Mejora de capacidad</option>
+            </select>
+            <span class="error-msg" id="err-categoria"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="stock">Stock <span class="req">*</span></label>
+            <input class="form-control" type="number" id="stock" name="stock" min="0" step="1">
+            <span class="form-text hint">Cantidad en inventario · solo enteros</span>
+            <span class="error-msg" id="err-stock"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="stock-critico">Stock crítico</label>
+            <input class="form-control" type="number" id="stock-critico" name="stock-critico" min="0" step="1">
+            <span class="form-text hint">Opcional · avisa cuando el stock llega a este valor</span>
+            <span class="error-msg" id="err-stock-critico"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="rareza">Rareza</label>
+            <select class="form-select" id="rareza" name="rareza">
+              <option value="COMUN">Común</option>
+              <option value="INUSUAL">Inusual</option>
+              <option value="RARO">Raro</option>
+              <option value="EPICO">Épico</option>
+              <option value="LEGENDARIO">Legendario</option>
+            </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="imagen">Imagen</label>
+            <input type="file" id="imagen" name="imagen" accept="image/*">
+            <span class="form-text hint">Opcional</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top:10px;">
+          <button type="submit" class="btn btn-oro">Guardar cambios</button>
+          <a class="btn btn-linea" href="productos.html">Cancelar</a>
+        </div>
+      </form>
+
+    </div>
+
+  </main>
+
+</div>
+
+<script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="../js/productos.js"></script>
+<script src="../js/validaciones.js"></script>
+
+<!-- INLINE. Depende de ../js/productos.js (buscarProducto, PRODUCTOS). -->
+<script>
+  /* PRECARGA. Lee ?id=N de la URL y vuelca el producto campo por campo.
+     Si agregas un input al formulario, agrega aqui su linea o llegara vacio.
+     #stock-critico se fija en 5 a mano: PRODUCTOS no guarda ese dato. */
+  const params = new URLSearchParams(window.location.search);
+  const p = buscarProducto(Number(params.get('id')) || 1) || PRODUCTOS[0];
+
+  document.getElementById('codigo').value       = p.codigo;
+  document.getElementById('nombre').value       = p.nombre;
+  document.getElementById('descripcion').value  = p.descripcion;
+  document.getElementById('precio').value       = p.precio;
+  document.getElementById('categoria').value    = p.tipo;
+  document.getElementById('stock').value        = p.stock === null ? 0 : p.stock;
+  document.getElementById('stock-critico').value = 5;
+  document.getElementById('rareza').value       = p.rareza;
+</script>
+
+</body>
+</html>
