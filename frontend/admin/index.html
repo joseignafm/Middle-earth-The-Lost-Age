@@ -5,20 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel del Maestro — Middle-earth: The Lost Age</title>
 
-<!-- Tipografías del reino -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@700&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
 
-<!-- Bootstrap 5 primero: nuestra hoja lo personaliza después -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="../css/styles.css">
 <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body class="region-orthanc">
 
+<!-- =========================================================
+     admin/index.html — PANEL DEL MAESTRO — pagina de bienvenida del area de administracion.
+       Carga  : ../vendor/fonts · ../vendor/bootstrap · ../css/styles.css + ../css/admin.css
+                NO carga ningun archivo .js propio: es 100% estatica.
+       Entra de: boton verde "Administracion" de cualquier pagina publica
+       Sale a : productos.html · producto-nuevo.html · usuarios.html
+                usuario-nuevo.html · ../index.html (boton verde de vuelta)
+       Los KPI (12, 5, 2, 3) y la tabla de "Atencion requerida" estan ESCRITOS A MANO
+       en este HTML: no se calculan desde PRODUCTOS. Si cambia el catalogo, estos
+       numeros no se actualizan solos.
+     ========================================================= -->
+
 <div class="admin-layout">
 
+  <!-- ===== MENU LATERAL DEL PANEL =====
+       Bloque IDENTICO en las 7 paginas de admin.
+         .rail            columna fija del panel (ver css/admin.css)
+         .offcanvas-lg    Bootstrap: bajo 992px deja de ser columna fija y
+                          pasa a ser un panel deslizante; sobre 992px se ve
+                          siempre y el boton "Menu del panel" queda oculto
+         #rail-admin      lo abre el boton via data-bs-target="#rail-admin"
+         .navitem.active  marca en que pagina estas (se pone a mano por archivo)
+       ==================================== -->
   <nav class="rail offcanvas-lg offcanvas-start" tabindex="-1" id="rail-admin" aria-label="Menú de administración">
     <div class="rail-brand">
       <p class="rail-mark">Middle-earth: the lost age</p>
@@ -43,10 +62,15 @@
 
   <main class="admin-main">
 
-    <button class="btn btn-linea btn-sm d-lg-none mb-4" type="button"
-            data-bs-toggle="offcanvas" data-bs-target="#rail-admin" aria-controls="rail-admin">
-      Menú del panel
-    </button>
+    <!-- Acciones del panel: el menú lateral solo aparece bajo 992px
+         (.d-lg-none); el botón verde de salida se ve siempre. -->
+    <div class="admin-acciones">
+      <button class="btn btn-linea btn-sm d-lg-none" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#rail-admin" aria-controls="rail-admin">
+        Menú del panel
+      </button>
+      <a class="btn btn-verde btn-sm" href="../index.html">← Volver a la tienda</a>
+    </div>
 
 
     <div class="admin-top">
@@ -137,7 +161,7 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
