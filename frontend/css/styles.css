@@ -1,0 +1,1241 @@
+/* =========================================================
+   MIDDLE-EARTH: THE LOST AGE
+   Hoja de estilos principal
+
+   Va DESPUÉS de Bootstrap 5: primero le pasamos nuestra
+   paleta a sus variables y luego vestimos lo nuestro.
+
+   ÍNDICE
+     1. Paleta, medidas y variables de Bootstrap
+     2. Regiones: cada página es un lugar del reino
+     3. Base
+     4. Navegación y cinta de región
+     5. Títulos, rótulos y ornamentos
+     6. Botones
+     7. Portada
+     8. Mercado
+     9. Detalle de producto
+    10. Carrito
+    11. Formularios
+    12. Blog y Nosotros
+    13. Footer
+    14. Responsive
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   CLASES ACOPLADAS AL JAVASCRIPT — NO RENOMBRAR
+   Estas no son solo estilo: hay JavaScript que las busca por
+   nombre o que las crea al vuelo. Cambiarlas aqui sin cambiar
+   el .js rompe una funcionalidad, en silencio y sin error:
+
+     .cart-count   js/carrito.js la busca con querySelectorAll
+                   para escribir el numero del header
+     .add-btn      la CREA plantillaProducto() y le engancha el click
+     .filter-btn   la busca el inline de productos.html
+     .active       marca el filtro elegido y el item del menu admin
+     .form-alert   mostrarAlerta() reescribe su className completo
+                   a "form-alert ok" o "form-alert bad"
+     .invalid      marcarError() se la pone al campo con error
+     .valid        marcarValido() se la pone al campo correcto
+     .error-msg    es el <span> donde se escribe el mensaje
+   --------------------------------------------------------- */
+
+
+/* =========================================================
+   1. PALETA, MEDIDAS Y VARIABLES DE BOOTSTRAP
+   ========================================================= */
+:root{
+
+  /* ---- Paleta oficial del reino ---- */
+  --obsidiana:#0B0D0C;   /* fondo principal */
+  --hierro:#292B28;      /* paneles y tarjetas */
+  --oro:#C9A227;         /* bordes */
+  --oro-claro:#E5C45A;   /* highlight */
+  --verde:#1F4A32;       /* naturaleza */
+  --azul:#5D8F91;        /* magia */
+  --rojo:#8F2418;        /* fuego */
+  --naranja:#D85A16;     /* lava */
+  --ambar:#F29A24;       /* épico y legendario */
+  --marfil:#E8D9B5;      /* texto */
+
+  /* ---- Tonos derivados ----
+     La misma paleta, ajustada para que se LEA sobre obsidiana:
+     el verde y el rojo originales son demasiado oscuros para
+     texto, así que aquí van sus versiones aclaradas.          */
+  --hierro-claro:#363831;
+  --hierro-oscuro:#161815;
+  --marfil-tenue:#A49877;
+  --verde-claro:#3F8C5E;
+  --rojo-claro:#C4472F;
+  --plata:#C3CBCC;
+  --mithril:#9FB8D0;
+
+  /* ---- Bordes: siempre oro antiguo, solo cambia la fuerza --- */
+  --borde:rgba(201,162,39,0.22);
+  --borde-fuerte:rgba(201,162,39,0.55);
+
+  /* ---- Rarezas (una por color de la paleta) ---- */
+  --r-comun:#8C8F86;
+  --r-inusual:var(--verde-claro);
+  --r-raro:var(--azul);
+  --r-epico:var(--naranja);
+  --r-legendario:var(--ambar);
+
+  /* ---- Acento: lo pone cada región (ver sección 2) ---- */
+  --acento:var(--oro);
+  --acento-rgb:201,162,39;
+
+  /* ---- Tipografías ---- */
+  --fuente-titulo:'Cinzel', Georgia, serif;
+  --fuente-texto:'Spectral', Georgia, 'Times New Roman', serif;
+  --fuente-marca:'Cinzel Decorative', 'Cinzel', Georgia, serif;
+
+  /* ---- Medidas ---- */
+  --radio:4px;
+  --aire:clamp(56px, 7vw, 100px);   /* aire vertical entre secciones */
+  --sombra:0 14px 34px rgba(0,0,0,0.45);
+}
+
+/* Le pasamos la paleta al tema oscuro de Bootstrap: así sus
+   componentes (campos, tablas, offcanvas) nacen ya vestidos. */
+:root[data-bs-theme="dark"]{
+  --bs-body-bg:var(--obsidiana);
+  --bs-body-color:var(--marfil);
+  --bs-body-font-family:var(--fuente-texto);
+  --bs-body-font-size:1.0625rem;
+  --bs-body-line-height:1.65;
+  --bs-emphasis-color:var(--marfil);
+  --bs-secondary-color:var(--marfil-tenue);
+  --bs-border-color:var(--borde);
+  --bs-border-radius:var(--radio);
+  --bs-link-color:var(--acento);
+  --bs-link-hover-color:var(--oro-claro);
+  --bs-focus-ring-color:rgba(var(--acento-rgb),0.35);
+  --bs-heading-color:var(--marfil);
+}
+
+
+/* =========================================================
+   2. REGIONES
+   Cada página lleva en su <body> la clase de su región.
+   Solo cambia el ACENTO: el oro, la piedra y el marfil son
+   comunes a todo el reino, y eso mantiene la familia unida.
+
+     Rivendel ......... portada            azul élfico
+     Erebor ........... mercado y detalle  oro antiguo
+     La Comarca ....... carrito            verde bosque
+     Minas Tirith ..... blog y crónicas    plata
+     Lothlórien ....... nosotros           ámbar
+     Rohan ............ contacto           naranja lava
+     Puertas de Durin . iniciar sesión     mithril
+     Bree ............. crear cuenta       oro brillante
+     Orthanc .......... administración     rojo volcánico
+   ========================================================= */
+.region-rivendel    { --acento:var(--azul);        --acento-rgb:93,143,145; }
+.region-erebor      { --acento:var(--oro);         --acento-rgb:201,162,39; }
+.region-comarca     { --acento:var(--verde-claro); --acento-rgb:63,140,94; }
+.region-minas-tirith{ --acento:var(--plata);       --acento-rgb:195,203,204; }
+.region-lothlorien  { --acento:var(--ambar);       --acento-rgb:242,154,36; }
+.region-rohan       { --acento:var(--naranja);     --acento-rgb:216,90,22; }
+.region-moria       { --acento:var(--mithril);     --acento-rgb:159,184,208; }
+.region-bree        { --acento:var(--oro-claro);   --acento-rgb:229,196,90; }
+.region-orthanc     { --acento:var(--rojo-claro);  --acento-rgb:196,71,47; }
+
+
+/* =========================================================
+   3. BASE
+   ========================================================= */
+body{
+  background-color:var(--obsidiana);
+  /* Luz de la región arriba, tierra abajo */
+  background-image:
+    radial-gradient(1200px 520px at 12% -8%,  rgba(var(--acento-rgb),0.13), transparent 70%),
+    radial-gradient(900px 480px at 92% 104%, rgba(var(--acento-rgb),0.08), transparent 70%),
+    radial-gradient(700px 400px at 50% 40%,  rgba(201,162,39,0.04),        transparent 70%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+
+h1,h2,h3,h4{
+  font-family:var(--fuente-titulo);
+  font-weight:600;
+  letter-spacing:0.01em;
+  margin:0;
+}
+h1{ font-size:clamp(2rem, 4.2vw, 3rem); line-height:1.12; }
+h2{ font-size:clamp(1.5rem, 2.6vw, 2.1rem); line-height:1.2; }
+
+a{ text-decoration:none; }
+img{ max-width:100%; display:block; }
+
+/* Anillo de foco en el color de la región */
+:focus-visible{
+  outline:2px solid var(--acento);
+  outline-offset:3px;
+}
+
+/* Cifras alineadas en columna */
+.mono,
+.item-meta, .item-price, .line-total, .summary-row,
+.kpi .n, td.num, th.num, .paginacion button{
+  font-variant-numeric:tabular-nums;
+}
+
+/* Rótulo grabado: versalitas espaciadas, el aire del reino */
+.eyebrow, .migas, .item-rareza, .rareza-tag,
+.rareza-item, .raza .bono, .requisitos span, .cart-line .sub,
+.form-label, .fecha, .team-card .rol, .filter-btn, .filtros-titulo,
+.site-footer, .cinta-region, .navitem, .rail-group, .kpi .l,
+.badge, thead th, .pilar-num, .nav-sesion{
+  font-family:var(--fuente-titulo);
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+}
+
+
+/* =========================================================
+   4. NAVEGACIÓN Y CINTA DE REGIÓN
+   ========================================================= */
+.site-nav{
+  padding:0;
+  background:rgba(11,13,12,0.86);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--borde);
+}
+.site-nav > .container-xxl{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  min-height:76px;
+}
+
+/* --- Marca: sello de rombos, sin letra --- */
+.marca{
+  display:flex; align-items:center; gap:14px;
+  padding:0;
+  margin:0;
+}
+.marca-sello{
+  width:24px; height:24px;
+  flex-shrink:0;
+  border:1px solid var(--oro);
+  transform:rotate(45deg);
+  position:relative;
+  transition:border-color .2s;
+}
+.marca-sello::after{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border:1px solid var(--acento);
+}
+.marca:hover .marca-sello{ border-color:var(--acento); }
+.marca-texto{
+  font-family:var(--fuente-marca);
+  font-size:1.05rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--marfil);
+  line-height:1;
+}
+.marca:hover .marca-texto{ color:var(--oro-claro); }
+
+/* --- Enlaces del menú --- */
+.navbar-nav{ gap:4px; }
+.site-nav .nav-link{
+  font-family:var(--fuente-titulo);
+  font-size:0.76rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--marfil-tenue);
+  padding:10px 14px;
+  position:relative;
+  transition:color .18s;
+}
+.site-nav .nav-link:hover{ color:var(--marfil); }
+.site-nav .nav-link.active{ color:var(--marfil); }
+/* Subrayado corto en el color de la región */
+.site-nav .nav-link.active::after{
+  content:"";
+  position:absolute;
+  left:14px; right:14px; bottom:2px;
+  height:1px;
+  background:var(--acento);
+}
+
+/* --- Acciones de la derecha --- */
+.nav-acciones{
+  display:flex; align-items:center; gap:16px;
+  flex-wrap:wrap;
+}
+.nav-sesion{
+  font-size:0.68rem;
+  color:var(--marfil-tenue);
+}
+.nav-sesion:hover{ color:var(--oro-claro); }
+
+.btn-carrito{
+  display:inline-flex; align-items:center; gap:9px;
+  padding:9px 16px;
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+  background:rgba(232,217,181,0.03);
+  color:var(--marfil);
+  font-family:var(--fuente-titulo);
+  font-size:0.7rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  transition:border-color .18s, color .18s;
+}
+.btn-carrito:hover{ border-color:var(--acento); color:var(--oro-claro); }
+/* .cart-count — numero de unidades del header.
+   ACOPLADA AL JS: la actualiza actualizarContador() de js/carrito.js en
+   TODAS las paginas que cargan ese archivo. Es clase y no id justamente
+   porque se repite en las once paginas publicas. */
+.cart-count{
+  min-width:20px; height:20px;
+  padding:0 5px;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--rojo);
+  color:#F2E4C6;
+  border-radius:10px;
+  font-size:0.68rem;
+  letter-spacing:0;
+}
+
+.navbar-toggler{ border-color:var(--borde); padding:6px 10px; }
+.navbar-toggler:focus{ box-shadow:none; outline:2px solid var(--acento); }
+
+/* --- Cinta de región --- */
+.cinta-region{
+  background:linear-gradient(90deg, rgba(var(--acento-rgb),0.14), transparent 70%);
+  border-bottom:1px solid var(--borde);
+}
+.cinta-region > div{
+  display:flex; align-items:center; gap:14px;
+  flex-wrap:wrap;
+  padding:11px 0;
+}
+.cinta-nombre{
+  display:flex; align-items:center; gap:10px;
+  font-size:0.72rem;
+  color:var(--acento);
+}
+/* Rombo que precede al nombre de la región */
+.cinta-nombre::before{
+  content:"";
+  width:6px; height:6px;
+  background:var(--acento);
+  transform:rotate(45deg);
+}
+.cinta-sub{
+  font-size:0.66rem;
+  letter-spacing:0.12em;
+  color:var(--marfil-tenue);
+  text-transform:none;
+  font-family:var(--fuente-texto);
+  font-style:italic;
+}
+
+
+/* =========================================================
+   5. TÍTULOS, RÓTULOS Y ORNAMENTOS
+   ========================================================= */
+.eyebrow{
+  font-size:0.68rem;
+  letter-spacing:0.3em;
+  color:var(--acento);
+  margin:0 0 16px;
+}
+.eyebrow::after{
+  content:"";
+  display:inline-block;
+  width:36px; height:1px;
+  margin-left:14px;
+  vertical-align:0.32em;
+  background:linear-gradient(90deg, var(--acento), transparent);
+}
+
+.section{
+  position:relative;
+  padding:var(--aire) 0;
+}
+/* Filete que se desvanece: separa secciones sin cortar la página */
+.section::after{
+  content:"";
+  position:absolute;
+  left:5%; right:5%; bottom:0;
+  height:1px;
+  background:linear-gradient(90deg,
+    transparent, var(--borde) 15%, var(--acento) 50%, var(--borde) 85%, transparent);
+  opacity:.75;
+}
+.section.sin-filete::after{ display:none; }
+/* Tras una cabecera de página la sección ya viene con aire */
+.page-head + .section{ padding-top:clamp(18px, 2vw, 30px); }
+
+.lede{
+  color:var(--marfil-tenue);
+  max-width:64ch;
+  margin-top:14px;
+  font-size:1.05rem;
+}
+
+.page-head{
+  padding:clamp(40px, 5vw, 68px) 0 clamp(20px, 3vw, 34px);
+}
+/* Filigrana bajo el título: filete — rombo — filete */
+.page-head h1::after{
+  content:"❖";
+  display:block;
+  width:fit-content;
+  margin-top:18px;
+  padding:0 74px;
+  font-size:0.8rem;
+  line-height:1;
+  color:var(--acento);
+  background:
+    linear-gradient(90deg, transparent, var(--acento)) left  center/62px 1px no-repeat,
+    linear-gradient(90deg, var(--acento), transparent) right center/62px 1px no-repeat;
+}
+
+
+/* =========================================================
+   6. BOTONES
+   Sobre la clase .btn de Bootstrap, dos acabados propios.
+   ========================================================= */
+.btn{
+  --bs-btn-focus-box-shadow:none;
+  font-family:var(--fuente-titulo);
+  font-size:0.76rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  font-style:normal;
+  padding:13px 30px;
+  border-radius:var(--radio);
+  border:1px solid transparent;
+  transition:background .18s, color .18s, border-color .18s, transform .18s;
+}
+.btn:active{ transform:translateY(1px); }
+
+/* Placa de oro batido */
+.btn-oro{
+  background:linear-gradient(180deg, var(--oro-claro), var(--oro));
+  border-color:var(--oro);
+  color:var(--obsidiana);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.35);
+}
+.btn-oro:hover{
+  background:linear-gradient(180deg, #F2D77E, var(--oro-claro));
+  color:var(--obsidiana);
+}
+
+/* Solo el trazo */
+.btn-linea{
+  background:transparent;
+  border-color:var(--borde-fuerte);
+  color:var(--marfil);
+}
+.btn-linea:hover{
+  border-color:var(--acento);
+  color:var(--acento);
+  background:rgba(var(--acento-rgb),0.07);
+}
+
+/* Puerta entre la tienda y el panel del Maestro.
+   Verde = zona de gestion, para que no se confunda con el oro
+   de las acciones de compra. Se usa en dos sentidos:
+     - .nav-acciones de las 11 paginas publicas  -> admin/index.html
+     - .admin-acciones de las 7 paginas de admin -> ../index.html
+   Vive aqui (y no en admin.css) porque las dos zonas cargan styles.css. */
+.btn-verde{
+  background:linear-gradient(180deg, var(--verde-claro), var(--verde));
+  border-color:var(--verde-claro);
+  color:#F2F7F3;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);
+}
+.btn-verde:hover{
+  background:linear-gradient(180deg, #55A876, var(--verde-claro));
+  border-color:#55A876;
+  color:#FFFFFF;
+}
+.btn-verde:focus-visible{
+  outline:2px solid var(--verde-claro);
+  outline-offset:2px;
+}
+
+/* Fila de acciones del panel: convive el boton de menu movil
+   (.d-lg-none, solo bajo 992px) con el verde, que se ve siempre. */
+.admin-acciones{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:28px;
+}
+
+.btn-sm{ padding:8px 16px; font-size:0.66rem; }
+.btn-row{ display:flex; gap:14px; flex-wrap:wrap; margin-top:34px; }
+
+
+/* =========================================================
+   7. PORTADA
+   ========================================================= */
+.hero{
+  position:relative;
+  padding:clamp(60px, 8vw, 116px) 0;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  left:5%; right:5%; bottom:0;
+  height:1px;
+  background:linear-gradient(90deg,
+    transparent, var(--borde) 15%, var(--acento) 50%, var(--borde) 85%, transparent);
+  opacity:.75;
+}
+.hero h1{ font-size:clamp(2.3rem, 5vw, 3.6rem); }
+.hero h1 em{ font-style:normal; color:var(--acento); }
+.hero-texto{
+  max-width:52ch;
+  margin-top:26px;
+  color:var(--marfil-tenue);
+  font-size:1.1rem;
+}
+
+/* Tres cifras bajo la portada */
+.hero-datos{
+  display:flex; flex-wrap:wrap; gap:44px;
+  margin:44px 0 0;
+  padding-top:28px;
+  border-top:1px solid var(--borde);
+}
+.hero-datos dt{
+  font-family:var(--fuente-titulo);
+  font-size:1.9rem;
+  color:var(--acento);
+  line-height:1;
+}
+.hero-datos dd{
+  margin:8px 0 0;
+  font-family:var(--fuente-titulo);
+  font-size:0.64rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--marfil-tenue);
+}
+
+/* Hueco de ilustración: lámina con marco doble */
+.art-placeholder{
+  aspect-ratio:4/3;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+  background:
+    radial-gradient(circle at 40% 32%, rgba(var(--acento-rgb),0.14), transparent 64%),
+    var(--hierro);
+  border:1px solid var(--borde);
+  outline:1px solid var(--borde);
+  outline-offset:6px;
+  border-radius:var(--radio);
+  color:var(--marfil-tenue);
+  font-family:var(--fuente-titulo);
+  font-size:0.7rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  text-align:center;
+}
+
+/* --- Pilares --- */
+.pillar{
+  height:100%;
+  padding:30px 26px;
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-top:2px solid var(--acento);
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+  transition:transform .2s, border-color .2s;
+}
+.pillar:hover{ transform:translateY(-3px); }
+.pilar-num{
+  display:block;
+  font-size:0.72rem;
+  letter-spacing:0.24em;
+  color:var(--acento);
+  margin-bottom:18px;
+}
+.pillar h3{ font-size:1.08rem; }
+.pillar p{ font-size:0.94rem; color:var(--marfil-tenue); margin:10px 0 0; }
+
+/* --- Razas --- */
+.raza{
+  height:100%;
+  padding:24px 14px;
+  text-align:center;
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+  transition:border-color .2s, transform .2s;
+}
+.raza:hover{ border-color:var(--acento); transform:translateY(-3px); }
+/* Monograma del linaje, en un disco de piedra */
+.raza .retrato{
+  width:62px; height:62px;
+  margin:0 auto 18px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 35%, var(--hierro-claro), var(--obsidiana));
+  border:1px solid var(--borde);
+  outline:1px solid var(--borde);
+  outline-offset:4px;
+}
+.raza .retrato span{
+  font-family:var(--fuente-titulo);
+  font-size:0.78rem;
+  letter-spacing:0.1em;
+  color:var(--acento);
+}
+.raza h3{ font-size:0.95rem; }
+.raza .bono{
+  margin:8px 0 0;
+  font-family:var(--fuente-titulo);
+  font-size:0.62rem;
+  letter-spacing:0.14em;
+  color:var(--marfil-tenue);
+}
+
+/* --- Leyenda de rarezas --- */
+.rarezas{ display:flex; flex-wrap:wrap; gap:18px; margin-top:28px; }
+.rareza-item{
+  display:flex; align-items:center; gap:9px;
+  font-size:0.66rem;
+  letter-spacing:0.14em;
+  color:var(--marfil-tenue);
+}
+.gema{
+  width:9px; height:9px;
+  display:inline-block;
+  transform:rotate(45deg);
+}
+.gema.comun{ background:var(--r-comun); }
+.gema.inusual{ background:var(--r-inusual); box-shadow:0 0 8px var(--r-inusual); }
+.gema.raro{ background:var(--r-raro); box-shadow:0 0 8px var(--r-raro); }
+.gema.epico{ background:var(--r-epico); box-shadow:0 0 8px var(--r-epico); }
+.gema.legendario{ background:var(--r-legendario); box-shadow:0 0 11px var(--r-legendario); }
+
+.aviso{
+  padding:28px 30px;
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-left:3px solid var(--acento);
+  border-radius:var(--radio);
+}
+.aviso p{ margin:0; color:var(--marfil-tenue); font-size:0.97rem; }
+.aviso b{ color:var(--marfil); font-weight:600; }
+
+
+/* =========================================================
+   8. MERCADO
+   ========================================================= */
+.filtros{
+  display:flex; flex-direction:column; gap:14px;
+  padding:6px 0 34px;
+  border-bottom:1px solid var(--borde);
+  margin-bottom:34px;
+}
+.filtros-grupo{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.filtros-titulo{
+  font-size:0.62rem;
+  letter-spacing:0.22em;
+  color:var(--marfil-tenue);
+  width:70px;
+}
+/* .filter-btn — boton de filtro del mercado.
+   ACOPLADA AL JS: el inline de productos.html los selecciona por esta
+   clase y lee sus atributos data-filtro y data-valor.
+   La variante .filter-btn.active marca el elegido dentro de su grupo. */
+.filter-btn{
+  padding:7px 16px;
+  font-size:0.64rem;
+  letter-spacing:0.14em;
+  background:transparent;
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+  color:var(--marfil-tenue);
+  cursor:pointer;
+  transition:color .18s, border-color .18s, background .18s;
+}
+.filter-btn:hover{ border-color:var(--acento); color:var(--marfil); }
+.filter-btn.active{
+  background:rgba(var(--acento-rgb),0.14);
+  border-color:var(--acento);
+  color:var(--acento);
+}
+
+/* La ficha del objeto. El filo superior lleva el color de su
+   rareza: el JS escribe --rareza en el propio elemento.       */
+/* .item-card — tarjeta de producto del mercado.
+   NO existe en productos.html: la genera plantillaProducto() de
+   js/productos.js. Para cambiar su estructura hay que editar esa funcion;
+   aqui solo esta su aspecto.
+   La variable --rareza se la inyecta el JS inline en el style del elemento,
+   con el color que devuelve claseRareza(). Por eso .item-rareza puede usar
+   var(--rareza) sin que este definida en ningun :root. */
+.item-card{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  padding:20px;
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-top:3px solid var(--rareza, var(--r-comun));
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+  transition:transform .2s, border-color .2s;
+}
+.item-card:hover{ transform:translateY(-4px); }
+/* Marca del objeto: la inicial de su nombre, grabada */
+.item-thumb{
+  aspect-ratio:4/3;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(var(--acento-rgb),0.08), transparent 70%),
+    linear-gradient(160deg, var(--hierro-claro), var(--obsidiana));
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+}
+.item-thumb span{
+  font-family:var(--fuente-titulo);
+  font-size:2.3rem;
+  color:var(--rareza, var(--r-comun));
+  opacity:.9;
+}
+.item-rareza{ font-size:0.6rem; letter-spacing:0.2em; color:var(--rareza, var(--r-comun)); }
+.item-name{ font-size:1.05rem; margin:0; }
+.item-card a:hover .item-name{ color:var(--oro-claro); }
+.item-meta{
+  display:flex; justify-content:space-between;
+  font-size:0.78rem;
+  color:var(--marfil-tenue);
+}
+.item-price{
+  display:flex; align-items:center; gap:8px;
+  font-weight:600;
+  font-size:1.05rem;
+  color:var(--oro-claro);
+}
+/* Moneda del reino */
+.coin{
+  width:15px; height:15px;
+  flex-shrink:0;
+  display:inline-block;
+  background:radial-gradient(circle at 35% 30%, var(--oro-claro), var(--oro));
+  border:1px solid var(--oro);
+  border-radius:50%;
+}
+.item-card .add-btn{ margin-top:auto; }
+
+/* .empty-state — aviso de "no hay nada".
+   Dos usos, ambos con display:none en el HTML y encendidos por JS:
+   #sin-resultados (renderProductos) y #carrito-vacio (renderCarrito). */
+.empty-state{
+  padding:72px 0;
+  text-align:center;
+  color:var(--marfil-tenue);
+  font-style:italic;
+  font-size:1.05rem;
+}
+
+
+/* =========================================================
+   9. DETALLE DE PRODUCTO
+   ========================================================= */
+.migas{
+  padding:30px 0 6px;
+  margin:0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  font-size:0.66rem;
+  letter-spacing:0.14em;
+  color:var(--marfil-tenue);
+}
+.migas a{ color:var(--marfil-tenue); }
+.migas a:hover{ color:var(--acento); }
+.migas > span{ opacity:.45; }
+
+.gallery-main{
+  aspect-ratio:1;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(var(--acento-rgb),0.12), transparent 66%),
+    linear-gradient(160deg, var(--hierro-claro), var(--obsidiana));
+  border:1px solid var(--rareza, var(--borde));
+  outline:1px solid var(--borde);
+  outline-offset:6px;
+  border-radius:var(--radio);
+}
+.gallery-main span{
+  font-family:var(--fuente-titulo);
+  font-size:6rem;
+  color:var(--rareza, var(--marfil));
+  opacity:.92;
+}
+.gallery-thumbs{ display:flex; gap:12px; margin-top:26px; }
+.gallery-thumbs div{
+  width:64px; height:64px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+  cursor:pointer;
+  transition:border-color .18s;
+  font-family:var(--fuente-titulo);
+  font-size:0.62rem;
+  letter-spacing:0.08em;
+  color:var(--marfil-tenue);
+}
+.gallery-thumbs div:hover,
+.gallery-thumbs div.active{ border-color:var(--rareza, var(--acento)); }
+
+.rareza-tag{
+  display:inline-block;
+  padding:5px 14px;
+  font-size:0.62rem;
+  letter-spacing:0.2em;
+  color:var(--rareza, var(--r-comun));
+  border:1px solid var(--rareza, var(--borde));
+  border-radius:var(--radio);
+}
+#detalle h1{ margin-top:18px; }
+#detalle .price{
+  display:flex; align-items:center; gap:10px;
+  margin-top:16px;
+  font-weight:600;
+  font-size:1.7rem;
+  color:var(--oro-claro);
+}
+#detalle .price .coin{ width:20px; height:20px; }
+
+/* Texto de sabor: una cita del Libro Rojo */
+.flavor{
+  max-width:54ch;
+  margin-top:26px;
+  padding-left:20px;
+  border-left:2px solid var(--acento);
+  color:var(--marfil-tenue);
+  font-style:italic;
+  font-size:1.05rem;
+}
+
+.requisitos{
+  margin:30px 0 0;
+  padding:20px 0;
+  border-top:1px solid var(--borde);
+  border-bottom:1px solid var(--borde);
+}
+.requisitos span{
+  display:block;
+  font-size:0.6rem;
+  letter-spacing:0.16em;
+  color:var(--marfil-tenue);
+  margin-bottom:6px;
+}
+.requisitos strong{ font-size:1.05rem; font-weight:600; }
+
+.stats{ margin-top:30px; }
+.stats h3{ font-size:1rem; margin-bottom:12px; }
+.stat-row{
+  display:flex; justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px dotted var(--borde);
+  font-size:0.94rem;
+}
+.stat-row span:first-child{ color:var(--marfil-tenue); }
+.stat-row span:last-child{ color:var(--oro-claro); }
+
+.buy-box{ display:flex; align-items:center; gap:16px; margin-top:34px; }
+.qty{
+  display:flex; align-items:center;
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+}
+.qty button{
+  padding:11px 16px;
+  background:none; border:none;
+  color:var(--marfil);
+  font-size:1.05rem;
+  cursor:pointer;
+}
+.qty button:hover{ color:var(--acento); }
+.qty input{
+  width:46px;
+  text-align:center;
+  background:none; border:none;
+  color:var(--marfil);
+  font-family:var(--fuente-texto);
+  font-variant-numeric:tabular-nums;
+}
+
+/* Objetos relacionados */
+.mini{
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  padding:18px 12px;
+  text-align:center;
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+  font-size:0.84rem;
+  color:var(--marfil-tenue);
+  transition:color .18s, border-color .18s, transform .18s;
+}
+.mini-marca{
+  font-family:var(--fuente-titulo);
+  font-size:1.6rem;
+  color:var(--acento);
+}
+.mini:hover{ border-color:var(--acento); color:var(--marfil); transform:translateY(-3px); }
+
+
+/* =========================================================
+   10. CARRITO
+   ========================================================= */
+/* .cart-line — una linea del carrito. La genera renderCarrito() de
+   js/carrito.js; el HTML de carrito.html solo tiene el contenedor vacio.
+   Dentro van .qty (los botones mas/menos) y .remove-btn, que no llevan id
+   porque se repiten: el JS los distingue por data-accion + data-id. */
+.cart-line{
+  padding:20px 0;
+  border-bottom:1px dotted var(--borde);
+  margin:0;
+}
+.cart-line .thumb{
+  width:66px; height:66px;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(160deg, var(--hierro-claro), var(--obsidiana));
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+}
+.cart-line .thumb span{
+  font-family:var(--fuente-titulo);
+  font-size:1.5rem;
+  color:var(--acento);
+}
+.cart-line h3{ font-size:1.02rem; }
+.cart-line .sub{ font-size:0.62rem; color:var(--marfil-tenue); margin-top:6px; }
+.cart-line .line-total{ font-weight:600; color:var(--oro-claro); min-width:86px; text-align:right; }
+.remove-btn{
+  padding:6px 10px;
+  background:none; border:none;
+  color:var(--marfil-tenue);
+  font-size:1rem;
+  cursor:pointer;
+}
+.remove-btn:hover{ color:var(--rojo-claro); }
+
+.cart-summary{
+  position:sticky; top:96px;
+  padding:30px;
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-top:2px solid var(--acento);
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+}
+.cart-summary h3{ font-size:1.1rem; margin-bottom:22px; }
+.summary-row{
+  display:flex; justify-content:space-between;
+  padding:10px 0;
+  font-size:0.92rem;
+  color:var(--marfil-tenue);
+}
+.summary-row.total{
+  margin-top:12px;
+  padding-top:18px;
+  border-top:1px solid var(--borde);
+  font-size:1.2rem;
+  font-weight:600;
+  color:var(--oro-claro);
+}
+
+
+/* =========================================================
+   11. FORMULARIOS
+   ========================================================= */
+.form-wrap{ max-width:560px; margin:clamp(40px,6vw,76px) auto clamp(60px,8vw,96px); padding:0 16px; }
+.form-wrap.wide{ max-width:880px; }
+
+.form-card{
+  padding:clamp(28px, 4vw, 44px);
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  outline:1px solid var(--borde);
+  outline-offset:5px;
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+}
+.form-card h1{ font-size:1.7rem; margin-bottom:8px; }
+.form-card .lede{ font-size:0.96rem; margin:0 0 30px; }
+
+/* Sello sobre el formulario */
+.form-logo{ text-align:center; margin-bottom:32px; }
+.form-logo .sigil-big{
+  width:54px; height:54px;
+  margin:8px auto 24px;
+  border:1px solid var(--oro);
+  transform:rotate(45deg);
+  position:relative;
+}
+.form-logo .sigil-big::after{
+  content:"";
+  position:absolute; inset:7px;
+  border:1px solid var(--acento);
+}
+.form-logo h2{
+  font-family:var(--fuente-marca);
+  font-size:1.15rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+}
+.form-logo-sub{
+  margin:8px 0 0;
+  font-family:var(--fuente-titulo);
+  font-size:0.62rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--acento);
+}
+
+.field{ margin-bottom:22px; }
+.form-label{
+  font-size:0.64rem;
+  letter-spacing:0.18em;
+  color:var(--marfil-tenue);
+  margin-bottom:9px;
+}
+.form-label .req{ color:var(--acento); }
+
+/* Campos sobre el tema oscuro de Bootstrap */
+.form-control, .form-select{
+  padding:12px 15px;
+  background-color:var(--hierro-oscuro);
+  border-color:var(--borde);
+  border-radius:var(--radio);
+  color:var(--marfil);
+  font-family:var(--fuente-texto);
+  font-size:0.98rem;
+}
+.form-control::placeholder{ color:rgba(164,152,119,0.6); }
+.form-control:focus, .form-select:focus{
+  background-color:var(--hierro-oscuro);
+  border-color:var(--acento);
+  box-shadow:0 0 0 1px var(--acento);
+  color:var(--marfil);
+}
+.form-control:disabled, .form-select:disabled{ opacity:.5; }
+textarea.form-control{ min-height:132px; resize:vertical; }
+
+/* Estados que pone validaciones.js */
+/* Estado visual de los campos de formulario.
+   ACOPLADAS AL JS: marcarError() pone .invalid y marcarValido() pone .valid,
+   ambas en js/validaciones.js. Aqui solo se decide de que color se ven. */
+.field .invalid{ border-color:var(--rojo-claro); box-shadow:0 0 0 1px var(--rojo-claro); }
+.field .valid{ border-color:var(--verde-claro); box-shadow:0 0 0 1px var(--verde-claro); }
+
+.form-text.hint{
+  margin-top:7px;
+  font-family:var(--fuente-texto);
+  font-style:italic;
+  font-size:0.8rem;
+  color:var(--marfil-tenue);
+}
+.error-msg{
+  display:block;
+  min-height:1em;
+  margin-top:6px;
+  font-size:0.82rem;
+  color:var(--rojo-claro);
+}
+
+/* Aviso superior: oculto hasta que el JS le pone .ok o .bad */
+.form-alert{
+  display:none;
+  margin-bottom:24px;
+  padding:14px 18px;
+  border-radius:var(--radio);
+  font-size:0.9rem;
+}
+.form-alert.ok{
+  display:block;
+  border:1px solid var(--verde-claro);
+  border-left:3px solid var(--verde-claro);
+  background:rgba(31,74,50,0.28);
+  color:var(--verde-claro);
+}
+.form-alert.bad{
+  display:block;
+  border:1px solid var(--rojo-claro);
+  border-left:3px solid var(--rojo-claro);
+  background:rgba(143,36,24,0.26);
+  color:var(--rojo-claro);
+}
+
+.form-foot{ text-align:center; margin:24px 0 0; font-size:0.9rem; color:var(--marfil-tenue); }
+.form-foot a{ color:var(--acento); }
+.form-foot a:hover{ text-decoration:underline; }
+
+/* El cupón usa el input-group de Bootstrap */
+.input-group .btn{ padding-left:18px; padding-right:18px; }
+
+
+/* =========================================================
+   12. BLOG Y NOSOTROS
+   ========================================================= */
+.blog-card{
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-left:3px solid var(--acento);
+  border-radius:var(--radio);
+  overflow:hidden;
+  box-shadow:var(--sombra);
+  transition:transform .2s;
+}
+.blog-card:hover{ transform:translateY(-3px); }
+.blog-texto{ padding:clamp(26px, 3vw, 40px); }
+.blog-card h2{ font-size:1.45rem; margin:10px 0 0; }
+.fecha{
+  font-size:0.62rem;
+  letter-spacing:0.2em;
+  color:var(--acento);
+  margin:0;
+}
+.blog-card p{ margin:14px 0 26px; color:var(--marfil-tenue); font-size:0.96rem; }
+.blog-card .art-placeholder{ aspect-ratio:auto; border:none; outline:none; border-radius:0; }
+
+/* Crónica completa */
+.article{
+  max-width:70ch;
+  margin:0 auto;
+  padding:clamp(30px,4vw,54px) 20px clamp(64px,8vw,96px);
+}
+.article .art-placeholder{ aspect-ratio:21/9; margin:34px 0 40px; }
+.article h2{ font-size:1.4rem; margin:44px 0 14px; }
+.article p{ margin:0 0 20px; color:var(--marfil-tenue); }
+/* Capitular iluminada al abrir la crónica */
+.article > p:first-of-type::first-letter{
+  float:left;
+  padding:8px 14px 0 0;
+  font-family:var(--fuente-titulo);
+  font-size:3.8rem;
+  line-height:0.82;
+  color:var(--acento);
+}
+.article blockquote{
+  margin:32px 0;
+  padding:6px 0 6px 24px;
+  border-left:2px solid var(--acento);
+  color:var(--marfil);
+  font-style:italic;
+  font-size:1.1rem;
+}
+
+/* La compañía */
+.team-card{
+  height:100%;
+  padding:32px 26px;
+  text-align:center;
+  background:var(--hierro);
+  border:1px solid var(--borde);
+  border-top:2px solid var(--acento);
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+}
+.team-card .avatar{
+  width:66px; height:66px;
+  margin:0 auto 20px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 35%, var(--hierro-claro), var(--obsidiana));
+  border:1px solid var(--borde);
+  outline:1px solid var(--borde);
+  outline-offset:4px;
+}
+.team-card .avatar span{
+  font-family:var(--fuente-titulo);
+  font-size:0.8rem;
+  letter-spacing:0.1em;
+  color:var(--acento);
+}
+.team-card .rol{
+  margin:10px 0 0;
+  font-size:0.62rem;
+  letter-spacing:0.16em;
+  color:var(--marfil-tenue);
+}
+.team-card p{ margin-top:14px; font-size:0.92rem; color:var(--marfil-tenue); }
+
+
+/* =========================================================
+   13. FOOTER
+   ========================================================= */
+.site-footer{
+  margin-top:auto;
+  padding:44px 0;
+  background:linear-gradient(180deg, transparent, rgba(41,43,40,0.6));
+  border-top:1px solid var(--borde);
+  color:var(--marfil-tenue);
+  font-size:0.64rem;
+}
+.foot-marca{
+  display:block;
+  font-family:var(--fuente-marca);
+  font-size:0.9rem;
+  letter-spacing:0.22em;
+  color:var(--marfil);
+}
+.foot-nota{
+  display:block;
+  margin-top:8px;
+  font-family:var(--fuente-texto);
+  font-size:0.8rem;
+  font-style:italic;
+  letter-spacing:0;
+  text-transform:none;
+}
+.foot-links{
+  display:flex; flex-wrap:wrap; gap:26px;
+  justify-content:flex-start;
+}
+.foot-links a{ color:var(--marfil-tenue); }
+.foot-links a:hover{ color:var(--acento); }
+
+
+/* =========================================================
+   14. RESPONSIVE
+   ========================================================= */
+@media (min-width:992px){
+  .foot-links{ justify-content:flex-end; }
+}
+
+@media (max-width:991.98px){
+  .site-nav > .container-xxl{ min-height:64px; flex-wrap:wrap; }
+  .navbar-collapse{ padding:18px 0 10px; }
+  .navbar-nav{ gap:0; margin-bottom:18px; }
+  .site-nav .nav-link{ padding:11px 0; }
+  .site-nav .nav-link.active::after{ left:0; right:auto; width:26px; }
+  .nav-acciones{ gap:14px; }
+
+  .hero-datos{ gap:28px; }
+  .cinta-sub{ width:100%; }
+}
+
+@media (max-width:575.98px){
+  .buy-box{ flex-wrap:wrap; }
+  .gallery-main span{ font-size:4rem; }
+  .form-card{ outline:none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important; animation:none !important; }
+}
