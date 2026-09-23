@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi carrito — Middle-earth: The Lost Age</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-comarca">
+
+<!-- =========================================================
+     CARRITO — resumen de compra. Toda su logica vive en js/carrito.js.
+       Carga  : js/productos.js -> js/carrito.js   (esta pagina no tiene inline)
+       Entra de: boton Carrito del header de cualquier pagina
+       Sale a : productos.html (si esta vacio)
+       Persistencia: localStorage, clave 'middle_earth_carrito', como
+       [{id, cantidad}, ...]. Por eso el carrito sobrevive al navegar entre paginas.
+       Enganches JS (todos los busca carrito.js por id):
+         #cart-lines      contenedor de las lineas; se regenera en cada renderCarrito()
+         #carrito-vacio   aviso de zurron vacio
+         #cart-summary    bloque del resumen; se oculta si no hay lineas
+         #sum-subtotal #sum-descuento #sum-total #fila-descuento   numeros del resumen
+         #cupon #cupon-msg          campo del cupon y su mensaje
+         #btn-cupon #btn-vaciar #btn-pagar   botones, enganchados en DOMContentLoaded
+       Los botones +/- y la X de cada linea NO tienen id (se repiten por linea):
+       se identifican por data-accion="mas|menos|quitar" + data-id.
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">La Comarca</span>
+    <span class="cinta-sub">Bolsón Cerrado · El zurrón del viajero</span>
+  </div>
+</div>
+
+<main>
+
+  <div class="page-head">
+    <div class="container-xxl px-3 px-lg-4">
+      <p class="eyebrow">Tus compras</p>
+      <h1>Mi carrito</h1>
+    </div>
+  </div>
+
+  <div class="container-xxl px-3 px-lg-4 pb-5">
+    <div class="row g-4 align-items-start">
+
+      <div class="col-lg-8">
+        <!-- Vacio: renderCarrito() de js/carrito.js regenera aqui TODAS
+             las lineas en cada cambio de cantidad. -->
+        <div id="cart-lines"></div>
+
+        <p class="empty-state" id="carrito-vacio" style="display:none;">
+          Tu zurrón está vacío.<br>
+          <a class="btn btn-linea mt-3" href="productos.html">Ir al mercado</a>
+        </p>
+      </div>
+
+      <!-- RESUMEN: <aside> porque es contenido secundario al listado.
+           renderResumen() escribe los numeros; el bloque entero se oculta
+           cuando el carrito esta vacio. -->
+      <aside class="col-lg-4">
+        <div class="cart-summary" id="cart-summary">
+          <h3>Resumen</h3>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="sum-subtotal">0</span>
+          </div>
+
+          <div class="summary-row" id="fila-descuento" style="display:none;">
+            <span>Descuento</span>
+            <span id="sum-descuento">0</span>
+          </div>
+
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="sum-total">0</span>
+          </div>
+
+          <div class="field mt-4 mb-0">
+            <label class="form-label" for="cupon">Cupón de descuento</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="cupon" placeholder="Ej: MITHRIL10">
+              <button class="btn btn-linea" id="btn-cupon" type="button">Aplicar</button>
+            </div>
+            <!-- aplicarCupon() escribe aqui el resultado y le cambia el color.
+                 Los codigos validos viven en el objeto CUPONES de carrito.js. -->
+            <span class="error-msg" id="cupon-msg"></span>
+          </div>
+
+          <div class="d-grid gap-2 mt-4">
+            <button class="btn btn-oro" id="btn-pagar" type="button">Pagar</button>
+            <button class="btn btn-linea btn-sm" id="btn-vaciar" type="button">Vaciar carrito</button>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+
+</body>
+</html>

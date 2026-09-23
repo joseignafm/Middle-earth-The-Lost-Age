@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crear cuenta — Middle-earth: The Lost Age</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-bree">
+
+<!-- =========================================================
+     REGISTRO DE USUARIO — mismo formulario que el alta del panel admin.
+       Carga  : js/regiones.js -> js/productos.js -> js/carrito.js -> js/validaciones.js
+       Entra de: boton "Crear cuenta" del header y enlace de login.html
+       Sale a : login.html
+       El <form> se llama form-usuario, EL MISMO id que admin/usuario-nuevo.html,
+       porque los valida la misma funcion: iniciarFormUsuario() de validaciones.js.
+       Enganches JS:
+         #run         validarRun(): 7-9 caracteres + digito verificador modulo 11
+         #nombre #apellidos #correo #direccion   validarTexto()/validarCorreo()
+         #password #password2                    validarPassword()/validarConfirmacion()
+         #nacimiento  opcional, sin validacion
+         #region #comuna  selects encadenados: inicializarRegiones('region','comuna')
+                          llena #region desde el arreglo REGIONES de js/regiones.js y,
+                          al cambiarlo, llena y habilita #comuna (nace disabled)
+         #alerta      caja del resultado del envio
+       #tipo-usuario NO existe aqui, solo en el panel. iniciarFormUsuario() comprueba
+       if (tipo) antes de usarlo, por eso la misma funcion sirve en los dos sitios.
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">Bree</span>
+    <span class="cinta-sub">El Póney Pisador · Donde llegan los que vienen de lejos</span>
+  </div>
+</div>
+
+<main>
+  <div class="form-wrap wide">
+
+    <div class="form-card">
+      <h1>Crear cuenta</h1>
+      <p class="lede">Un solo registro te permite crear todos los héroes que quieras.</p>
+
+      <!-- Caja de resultado del envio (ver mostrarAlerta en validaciones.js). -->
+      <div class="form-alert" id="alerta"></div>
+
+      <!-- novalidate: los mensajes los pone validaciones.js, no el navegador.
+           id form-usuario = EL MISMO de admin/usuario-nuevo.html, porque
+           iniciarFormUsuario() valida los dos formularios. -->
+      <form id="form-usuario" novalidate>
+
+        <div class="field">
+          <label class="form-label" for="run">RUN <span class="req">*</span></label>
+          <input class="form-control" type="text" id="run" name="run" maxlength="9" placeholder="190110222">
+          <span class="form-text hint">Sin puntos ni guion · entre 7 y 9 caracteres</span>
+          <span class="error-msg" id="err-run"></span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="nombre">Nombre <span class="req">*</span></label>
+            <input class="form-control" type="text" id="nombre" name="nombre" maxlength="50">
+            <span class="form-text hint">Máx. 50 caracteres</span>
+            <span class="error-msg" id="err-nombre"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="apellidos">Apellidos <span class="req">*</span></label>
+            <input class="form-control" type="text" id="apellidos" name="apellidos" maxlength="100">
+            <span class="form-text hint">Máx. 100 caracteres</span>
+            <span class="error-msg" id="err-apellidos"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="form-label" for="correo">Correo <span class="req">*</span></label>
+          <input class="form-control" type="email" id="correo" name="correo" maxlength="100" placeholder="nombre@duoc.cl">
+          <span class="form-text hint">Solo @duoc.cl, @profesor.duoc.cl o @gmail.com · máx. 100 caracteres</span>
+          <span class="error-msg" id="err-correo"></span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="password">Contraseña <span class="req">*</span></label>
+            <input class="form-control" type="password" id="password" name="password" maxlength="10">
+            <span class="form-text hint">Entre 4 y 10 caracteres</span>
+            <span class="error-msg" id="err-password"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="password2">Confirmar contraseña <span class="req">*</span></label>
+            <input class="form-control" type="password" id="password2" name="password2" maxlength="10">
+            <span class="form-text hint">Debe coincidir con la anterior</span>
+            <span class="error-msg" id="err-password2"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="form-label" for="nacimiento">Fecha de nacimiento</label>
+          <input class="form-control" type="date" id="nacimiento" name="nacimiento">
+          <span class="form-text hint">Opcional</span>
+          <span class="error-msg" id="err-nacimiento"></span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="region">Región <span class="req">*</span></label>
+            <select class="form-select" id="region" name="region"></select>
+            <span class="error-msg" id="err-region"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="comuna">Comuna <span class="req">*</span></label>
+            <!-- Nace VACIO y disabled. inicializarRegiones() lo llena y lo
+                 habilita recien cuando se elige una region. -->
+            <select class="form-select" id="comuna" name="comuna" disabled></select>
+            <span class="form-text hint">Se activa al elegir una región</span>
+            <span class="error-msg" id="err-comuna"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="form-label" for="direccion">Dirección <span class="req">*</span></label>
+          <input class="form-control" type="text" id="direccion" name="direccion" maxlength="300">
+          <span class="form-text hint">Máx. 300 caracteres</span>
+          <span class="error-msg" id="err-direccion"></span>
+        </div>
+
+        <button type="submit" class="btn btn-oro w-100">Crear cuenta</button>
+      </form>
+
+      <p class="form-foot">
+        ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/regiones.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/validaciones.js"></script>
+
+</body>
+</html>
