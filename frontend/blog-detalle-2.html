@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Aliento de los Valar — Middle-earth: The Lost Age</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-minas-tirith">
+
+<!-- =========================================================
+     CRONICA 2 — "El Aliento de los Valar". Contenido estatico.
+       Carga  : js/productos.js -> js/carrito.js (solo por el contador del header)
+       Entra de: blog.html · blog-detalle-1.html
+       Sale a : detalle-producto.html (enlaza al objeto del que habla) · blog.html
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">Minas Tirith</span>
+    <span class="cinta-sub">Archivos de Gondor · Crónicas del reino</span>
+  </div>
+</div>
+
+<main>
+
+  <div class="container-xxl px-3 px-lg-4">
+    <p class="migas">
+    <a href="index.html">Inicio</a> <span>/</span>
+    <a href="blog.html">Blog</a> <span>/</span>
+    El Aliento de los Valar
+    </p>
+  </div>
+
+  <article class="article">
+    <p class="eyebrow">7 DE SEPTIEMBRE, 2026 · OBJETOS DEL REINO</p>
+    <h1>El Aliento de los Valar: el objeto que nunca se pierde</h1>
+
+    <div class="art-placeholder">Ilustración del artículo (placeholder)</div>
+
+    <p>En todo el catálogo de Middle-earth: The Lost Age hay un solo objeto marcado como <strong>objeto clave</strong>. No es el más caro ni el más poderoso: es una poción de rareza rara que no otorga ninguna bonificación de estadísticas. Pero es el único que puede devolver la vida a un héroe caído.</p>
+
+    <h2>Cuatro reglas que no comparte ningún otro objeto</h2>
+
+    <p>El Aliento de los Valar tiene cuatro excepciones especiales, y cada una existe para cerrar un agujero distinto del diseño.</p>
+
+    <p><strong>No se pierde al morir.</strong> Es la más importante. Si el objeto que te saca de la muerte desapareciera al morir, un héroe con la poción en la mochila quedaría atrapado sin poder usarla. La excepción existe para que ese caso no ocurra nunca.</p>
+
+    <p><strong>Se entrega aunque no haya espacio.</strong> El inventario tiene un límite de peso, y cuando está lleno, el botín se pierde. Con esta poción no: siempre entra. Perder la llave que te devuelve al juego por falta de espacio sería un error de diseño evitable.</p>
+
+    <p><strong>Puede usarse estando muerto.</strong> Un héroe muerto no puede combatir, ni aceptar misiones, ni comprar en el mercado. Consumir el Aliento es literalmente la única acción que le queda permitida.</p>
+
+    <p><strong>No puede venderse.</strong> Todos los objetos se venden de vuelta al mercado por el 20% de su precio. Este no. Nadie va a deshacerse de su salvavidas por un puñado de oro y arrepentirse después.</p>
+
+    <blockquote>Cuatro protecciones para un objeto que existe, en el fondo, para que nadie quede sin salida.</blockquote>
+
+    <h2>El rescate entre héroes</h2>
+
+    <p>Hay una consecuencia que nos gusta especialmente. Un héroe muerto no puede hacer nada, pero <em>sí puede recibir objetos</em>. Eso significa que otro jugador puede entregarle el Aliento y devolverlo al mundo.</p>
+
+    <p>La muerte de un compañero deja de ser una pérdida individual y se convierte en una oportunidad de ayuda. No es una mecánica social decorativa: es la única forma de rescatar a alguien que murió sin la poción encima.</p>
+
+    <h2>Lo que cuesta</h2>
+
+    <p>La poción se vende en el mercado por 2.850 de oro, y también aparece como recompensa de misión y como botín de combate. Como todo en Middle-earth: The Lost Age, no es exclusiva del mercado: comprarla es un atajo, no la única puerta.</p>
+
+    <div class="btn-row">
+      <a class="btn btn-linea" href="blog.html">Volver a las crónicas</a>
+      <a class="btn btn-oro" href="detalle-producto.html?id=3">Ver el objeto</a>
+    </div>
+  </article>
+
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+
+</body>
+</html>

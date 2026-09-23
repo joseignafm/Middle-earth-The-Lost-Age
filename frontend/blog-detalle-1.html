@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Por qué la muerte tiene que doler — Middle-earth: The Lost Age</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-minas-tirith">
+
+<!-- =========================================================
+     CRONICA 1 — "Por que la muerte tiene que doler". Contenido estatico.
+       Carga  : js/productos.js -> js/carrito.js (solo por el contador del header)
+       Entra de: blog.html
+       Sale a : blog-detalle-2.html · blog.html
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">Minas Tirith</span>
+    <span class="cinta-sub">Archivos de Gondor · Crónicas del reino</span>
+  </div>
+</div>
+
+<main>
+
+  <div class="container-xxl px-3 px-lg-4">
+    <p class="migas">
+    <a href="index.html">Inicio</a> <span>/</span>
+    <a href="blog.html">Blog</a> <span>/</span>
+    Por qué la muerte tiene que doler
+    </p>
+  </div>
+
+  <article class="article">
+    <p class="eyebrow">14 DE SEPTIEMBRE, 2026 · DISEÑO DE JUEGO</p>
+    <h1>Por qué la muerte tiene que doler</h1>
+
+    <div class="art-placeholder">Ilustración del artículo (placeholder)</div>
+
+    <p>Cuando un héroe cae en Middle-earth: The Lost Age, pierde la mitad del oro que llevaba y todos los objetos que cargaba sin equipar. Lo que llevaba puesto se conserva, pero el resto desaparece del mundo de forma definitiva: no queda tirado en el lugar de la muerte, no hay un cadáver al que volver, no hay recuperación posible.</p>
+
+    <p>Es una decisión que genera reacciones fuertes. Y es exactamente lo que buscábamos.</p>
+
+    <h2>Sin consecuencias, no hay decisiones</h2>
+
+    <p>Un juego donde morir no cuesta nada convierte cada combate en un trámite. Da igual atacar al goblin o al dragón: si perder solo significa volver a intentarlo, la única variable que queda es el tiempo. El jugador deja de elegir y empieza a repetir.</p>
+
+    <p>Cuando la derrota cuesta oro y posesiones, entrar en una región peligrosa se vuelve una apuesta consciente. El jugador se pregunta qué lleva encima, si vale la pena arriesgar el equipo que acaba de comprar, si conviene vaciar la mochila antes de bajar a la mazmorra. Esas preguntas son el juego.</p>
+
+    <blockquote>La apuesta solo tiene sentido si se puede perder.</blockquote>
+
+    <h2>La muerte también sostiene la economía</h2>
+
+    <p>Hay una razón menos obvia. Toda economía de juego necesita mecanismos que retiren dinero de circulación, o el oro se acumula sin freno hasta perder su valor. En Middle-earth: The Lost Age el oro entra por victorias, misiones y venta de botín. Sale por las compras en el mercado — y por las muertes.</p>
+
+    <p>Ese oro perdido no cambia de manos: se borra. Es lo que mantiene el equilibrio entre lo que entra y lo que sale, y lo que hace que un objeto legendario siga costando lo que debe costar después de cien horas de juego.</p>
+
+    <h2>Pero no queríamos crueldad</h2>
+
+    <p>Hay un límite entre el riesgo y la frustración. Por eso el equipo que llevas puesto se conserva: un héroe que muere no vuelve desnudo al mundo. Por eso existe el Aliento de los Valar, que nunca se pierde. Y por eso otro jugador puede rescatarte.</p>
+
+    <p>La convalecencia posterior a resucitar dura como máximo diez minutos, y durante ese tiempo el héroe puede seguir combatiendo si acepta la desventaja. Nadie queda encerrado esperando.</p>
+
+    <p>La muerte en Middle-earth: The Lost Age duele. No debería paralizarte.</p>
+
+    <div class="btn-row">
+      <a class="btn btn-linea" href="blog.html">Volver a las crónicas</a>
+      <a class="btn btn-oro" href="blog-detalle-2.html">Siguiente crónica</a>
+    </div>
+  </article>
+
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+
+</body>
+</html>

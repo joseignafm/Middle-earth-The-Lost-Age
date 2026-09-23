@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crónicas del reino — Middle-earth: The Lost Age</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-minas-tirith">
+
+<!-- =========================================================
+     BLOG — listado de cronicas. Contenido estatico.
+       Carga  : js/productos.js -> js/carrito.js (solo por el contador del header)
+       Entra de: navbar (Blog)
+       Sale a : blog-detalle-1.html · blog-detalle-2.html
+       No hay sistema de posts: los enlaces a los detalles estan escritos a mano.
+       Para agregar una cronica hay que crear su archivo y enlazarlo aqui.
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">Minas Tirith</span>
+    <span class="cinta-sub">Archivos de Gondor · Crónicas del reino</span>
+  </div>
+</div>
+
+<main>
+
+  <div class="page-head">
+    <div class="container-xxl px-3 px-lg-4">
+      <p class="eyebrow">Noticias del reino</p>
+      <h1>Crónicas del reino</h1>
+      <p class="lede">Datos curiosos, decisiones de diseño y rumores que llegan desde los caminos de la Tierra Media.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container-xxl px-3 px-lg-4">
+      <div class="row g-4">
+
+        <div class="col-12">
+          <article class="blog-card row g-0 align-items-stretch">
+            <div class="col-lg-7 blog-texto">
+              <p class="fecha">14 de septiembre, 2026</p>
+              <h2>Por qué la muerte tiene que doler</h2>
+              <p>Al morir, un héroe pierde la mitad de su oro y todo lo que cargaba sin equipar. Suena duro, y lo es a propósito. Explicamos por qué un castigo real es lo único que le da peso a cada decisión de combate.</p>
+              <a class="btn btn-linea btn-sm" href="blog-detalle-1.html">Leer la crónica</a>
+            </div>
+            <div class="col-lg-5">
+              <div class="art-placeholder h-100">Ilustración<br>(placeholder)</div>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-12">
+          <article class="blog-card row g-0 align-items-stretch">
+            <div class="col-lg-7 blog-texto">
+              <p class="fecha">7 de septiembre, 2026</p>
+              <h2>El Aliento de los Valar: el objeto que nunca se pierde</h2>
+              <p>Es el único objeto capaz de devolver la vida a un héroe caído, y tiene cuatro protecciones especiales que ningún otro comparte. La historia de por qué existen esas excepciones.</p>
+              <a class="btn btn-linea btn-sm" href="blog-detalle-2.html">Leer la crónica</a>
+            </div>
+            <div class="col-lg-5">
+              <div class="art-placeholder h-100">Ilustración<br>(placeholder)</div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+
+</body>
+</html>

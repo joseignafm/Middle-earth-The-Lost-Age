@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nosotros — Middle-earth: The Lost Age</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="region-lothlorien">
+
+<!-- =========================================================
+     NOSOTROS — sobre el juego y el equipo. Contenido estatico.
+       Carga  : js/productos.js -> js/carrito.js (solo por el contador del header)
+       Entra de: navbar (Nosotros)
+       No hay logica: las tarjetas .team-card se editan directamente en este HTML.
+     ========================================================= -->
+
+<!-- ===== NAVEGACION SUPERIOR =====
+     Bloque IDENTICO en las 11 paginas publicas: si lo cambias aqui,
+     hay que replicarlo en las otras diez (no hay plantillas ni includes).
+       .navbar-expand-lg  Bootstrap: el menu se colapsa bajo 992px
+       .sticky-top        queda fijo al hacer scroll
+       #menu-principal    lo abre/cierra el boton hamburguesa via data-bs-target
+       .cart-count        lo actualiza actualizarContador() de js/carrito.js
+                          en TODAS las paginas que cargan ese archivo
+       .btn-verde         puerta al panel de administracion
+     ============================================== -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container-xxl px-3 px-lg-4">
+
+    <a class="navbar-brand marca" href="index.html">
+      <span class="marca-sello" aria-hidden="true"></span>
+      <span class="marca-texto">Middle Earth</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#menu-principal" aria-controls="menu-principal"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu-principal">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="productos.html">Mercado</a></li>
+        <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="nosotros.html">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a class="nav-sesion" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-linea btn-sm" href="registro.html">Crear cuenta</a>
+        <a class="btn-carrito" href="carrito.html" aria-label="Ver carrito">
+          Carrito <span class="cart-count">0</span>
+        </a>
+
+        <!-- Puerta al panel del Maestro. Verde = zona de gestión,
+             distinta del oro de las acciones de compra. -->
+        <a class="btn btn-verde btn-sm" href="admin/index.html">Administración</a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Cinta de región: cada página pertenece a un lugar del reino -->
+<div class="cinta-region">
+  <div class="container-xxl px-3 px-lg-4">
+    <span class="cinta-nombre">Lothlórien</span>
+    <span class="cinta-sub">Caras Galadhon · Los que tejen el reino</span>
+  </div>
+</div>
+
+<main>
+
+  <div class="page-head">
+    <div class="container-xxl px-3 px-lg-4">
+      <p class="eyebrow">Quiénes somos</p>
+      <h1>Nosotros</h1>
+      <p class="lede">Middle-earth: The Lost Age nació como un proyecto académico y terminó convirtiéndose en un mundo completo, con su propia economía y sus propias reglas.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container-xxl px-3 px-lg-4">
+      <div class="row g-5 align-items-center">
+        <div class="col-lg-7">
+          <h2>Un reino con reglas propias</h2>
+          <p class="lede">Middle-earth: The Lost Age es un juego de rol de fantasía épica donde cada jugador construye sus héroes y los hace crecer en un mundo persistente. No hay un avatar único: hay una colección de personajes, cada uno con su linaje, su equipo y su historia.</p>
+          <p class="lede">Lo que distingue al reino son tres decisiones de diseño. La muerte cuesta de verdad: oro, posesiones y tiempo de convalecencia. El rescate entre jugadores es una mecánica real, no un gesto. Y nada de lo que vende el mercado queda fuera del alcance de quien prefiere ganárselo jugando.</p>
+        </div>
+        <div class="col-lg-5">
+          <div class="art-placeholder">Mapa del reino<br>(placeholder de arte)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-xxl px-3 px-lg-4">
+      <p class="eyebrow">Cómo se construyó</p>
+      <h2>El proyecto por dentro</h2>
+      <p class="lede">Middle-earth: The Lost Age se desarrolla en etapas. Esta primera entrega corresponde al frontend: la estructura de las vistas, el diseño visual y las validaciones de formulario que más adelante alimentarán la base de datos del reino.</p>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mt-1">
+        <div class="col">
+          <article class="pillar">
+            <span class="pilar-num">01</span>
+            <h3>Estructura</h3>
+            <p>HTML semántico con secciones, encabezados y listas, y una navegación completa entre todas las vistas.</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="pillar">
+            <span class="pilar-num">02</span>
+            <h3>Diseño</h3>
+            <p>Bootstrap 5 más una hoja de estilos propia, compartida por todas las páginas, con diseño responsivo y la paleta del reino.</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="pillar">
+            <span class="pilar-num">03</span>
+            <h3>Validaciones</h3>
+            <p>Comprobaciones en tiempo real con mensajes de error propios, escritas en JavaScript sin librerías externas.</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="pillar">
+            <span class="pilar-num">04</span>
+            <h3>Control de versiones</h3>
+            <p>Repositorio público en GitHub, con el trabajo repartido entre los integrantes del equipo.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-xxl px-3 px-lg-4">
+      <p class="eyebrow">El equipo</p>
+      <h2>Los escribas del reino</h2>
+      <p class="lede">Cada integrante se hizo cargo de una parte del desarrollo.</p>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-1">
+        <div class="col">
+          <article class="team-card">
+            <div class="avatar"><span>01</span></div>
+            <h3>Integrante 1</h3>
+            <p class="rol">Estructura y contenido</p>
+            <p>Maquetación de las vistas públicas y redacción del contenido del reino.</p>
+          </article>
+        </div>
+        <div class="col">
+          <article class="team-card">
+            <div class="avatar"><span>02</span></div>
+            <h3>Integrante 2</h3>
+            <p class="rol">Diseño y estilos</p>
+            <p>Hoja de estilos, paleta de colores, tipografía y comportamiento responsivo.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== PIE =====
+     Tambien identico en las 11 paginas publicas. Repite los enlaces del
+     menu y agrega el acceso a Administracion. -->
+<footer class="site-footer">
+  <div class="container-xxl px-3 px-lg-4">
+    <div class="row gy-3 align-items-center">
+      <div class="col-lg-5">
+        <span class="foot-marca">Middle Earth</span>
+        <span class="foot-nota">The Lost Age · Reino de fantasía épica</span>
+      </div>
+      <div class="col-lg-7">
+        <nav class="foot-links">
+          <a href="index.html">Inicio</a>
+          <a href="productos.html">Mercado</a>
+          <a href="blog.html">Blog</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="admin/index.html">Administración</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/carrito.js"></script>
+
+</body>
+</html>
