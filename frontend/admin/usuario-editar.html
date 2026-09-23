@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar usuario — Panel del Maestro</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="region-orthanc">
+
+<!-- =========================================================
+     admin/usuario-editar.html — EDICION DE USUARIO — mismo formulario que el alta, precargado.
+       Carga  : ../js/regiones.js -> ../js/validaciones.js -> script inline
+       Entra de: enlace "editar" de cada fila de usuarios.html
+       OJO: NO lee ningun ?id= de la URL. El inline tiene un objeto USUARIO_DEMO
+       escrito a mano y siempre muestra ese mismo usuario, venga del enlace que venga.
+       La precarga corre en el evento 'load' (no en DOMContentLoaded) y, despues de
+       poner la region, lanza un Event('change') a mano para que inicializarRegiones()
+       rellene las comunas antes de asignar #comuna. Sin ese disparo, la comuna
+       quedaria vacia porque el <select> todavia no tendria opciones.
+     ========================================================= -->
+
+<div class="admin-layout">
+
+  <!-- ===== MENU LATERAL DEL PANEL =====
+       Bloque IDENTICO en las 7 paginas de admin.
+         .rail            columna fija del panel (ver css/admin.css)
+         .offcanvas-lg    Bootstrap: bajo 992px deja de ser columna fija y
+                          pasa a ser un panel deslizante; sobre 992px se ve
+                          siempre y el boton "Menu del panel" queda oculto
+         #rail-admin      lo abre el boton via data-bs-target="#rail-admin"
+         .navitem.active  marca en que pagina estas (se pone a mano por archivo)
+       ==================================== -->
+  <nav class="rail offcanvas-lg offcanvas-start" tabindex="-1" id="rail-admin" aria-label="Menú de administración">
+    <div class="rail-brand">
+      <p class="rail-mark">Middle-earth: the lost age</p>
+      <h1>Panel del Maestro</h1>
+      <p class="sub">administración del reino</p>
+    </div>
+
+    <a class="navitem" href="index.html">Inicio</a>
+
+    <p class="rail-group">Catálogo</p>
+    <a class="navitem" href="productos.html">Productos</a>
+    <a class="navitem" href="producto-nuevo.html">Nuevo producto</a>
+
+    <p class="rail-group">Personas</p>
+    <a class="navitem active" href="usuarios.html">Usuarios</a>
+    <a class="navitem" href="usuario-nuevo.html">Nuevo usuario</a>
+
+    <div class="rail-foot">
+      <a class="navitem" href="../index.html">Volver a la tienda</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- Acciones del panel: el menú lateral solo aparece bajo 992px
+         (.d-lg-none); el botón verde de salida se ve siempre. -->
+    <div class="admin-acciones">
+      <button class="btn btn-linea btn-sm d-lg-none" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#rail-admin" aria-controls="rail-admin">
+        Menú del panel
+      </button>
+      <a class="btn btn-verde btn-sm" href="../index.html">← Volver a la tienda</a>
+    </div>
+
+
+    <div class="admin-top">
+      <div>
+        <p class="eyebrow">Mantenedor de usuarios</p>
+        <h1>Editar usuario</h1>
+        <p class="lede">Modifica los datos de la cuenta seleccionada.</p>
+      </div>
+      <a class="btn btn-linea btn-sm" href="usuarios.html">Volver al listado</a>
+    </div>
+
+    <div class="form-card">
+
+      <div class="form-alert" id="alerta"></div>
+
+      <form id="form-usuario" novalidate>
+
+        <div class="field">
+          <label class="form-label" for="run">RUN <span class="req">*</span></label>
+          <input class="form-control" type="text" id="run" name="run" maxlength="9" placeholder="190110222">
+          <span class="form-text hint">Sin puntos ni guion · entre 7 y 9 caracteres</span>
+          <span class="error-msg" id="err-run"></span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="nombre">Nombre <span class="req">*</span></label>
+            <input class="form-control" type="text" id="nombre" name="nombre" maxlength="50">
+            <span class="form-text hint">Máx. 50 caracteres</span>
+            <span class="error-msg" id="err-nombre"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="apellidos">Apellidos <span class="req">*</span></label>
+            <input class="form-control" type="text" id="apellidos" name="apellidos" maxlength="100">
+            <span class="form-text hint">Máx. 100 caracteres</span>
+            <span class="error-msg" id="err-apellidos"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="form-label" for="correo">Correo <span class="req">*</span></label>
+          <input class="form-control" type="email" id="correo" name="correo" maxlength="100" placeholder="nombre@duoc.cl">
+          <span class="form-text hint">Solo @duoc.cl, @profesor.duoc.cl o @gmail.com · máx. 100 caracteres</span>
+          <span class="error-msg" id="err-correo"></span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="nacimiento">Fecha de nacimiento</label>
+            <input class="form-control" type="date" id="nacimiento" name="nacimiento">
+            <span class="form-text hint">Opcional</span>
+            <span class="error-msg" id="err-nacimiento"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="tipo-usuario">Tipo de usuario <span class="req">*</span></label>
+            <!-- Campo propio del panel; no existe en registro.html. -->
+            <select class="form-select" id="tipo-usuario" name="tipo-usuario">
+              <option value="">-- Selecciona el perfil --</option>
+              <option value="ADMINISTRADOR">Administrador</option>
+              <option value="VENDEDOR">Vendedor</option>
+              <option value="CLIENTE">Cliente</option>
+            </select>
+            <span class="form-text hint">Define a qué partes del sistema accede</span>
+            <span class="error-msg" id="err-tipo-usuario"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="region">Región <span class="req">*</span></label>
+            <select class="form-select" id="region" name="region"></select>
+            <span class="error-msg" id="err-region"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="field">
+            <label class="form-label" for="comuna">Comuna <span class="req">*</span></label>
+            <select class="form-select" id="comuna" name="comuna" disabled></select>
+            <span class="form-text hint">Se activa al elegir una región</span>
+            <span class="error-msg" id="err-comuna"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="form-label" for="direccion">Dirección <span class="req">*</span></label>
+          <input class="form-control" type="text" id="direccion" name="direccion" maxlength="300">
+          <span class="form-text hint">Máx. 300 caracteres</span>
+          <span class="error-msg" id="err-direccion"></span>
+        </div>
+
+        <div class="btn-row" style="margin-top:10px;">
+          <button type="submit" class="btn btn-oro">Guardar cambios</button>
+          <a class="btn btn-linea" href="usuarios.html">Cancelar</a>
+        </div>
+      </form>
+
+    </div>
+
+  </main>
+
+</div>
+
+<script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="../js/regiones.js"></script>
+<script src="../js/validaciones.js"></script>
+
+<!-- INLINE. Depende de ../js/regiones.js para la cadena region/comuna. -->
+<script>
+  /* PRECARGA DE EJEMPLO. No lee ?id= de la URL: siempre muestra este mismo
+     usuario, venga del enlace que venga. Sin backend no hay de donde sacarlo. */
+  const USUARIO_DEMO = {
+    run:'190110222',
+    nombre:'Elanor',
+    apellidos:'Hojagris',
+    correo:'elanor@duoc.cl',
+    nacimiento:'1998-04-12',
+    tipo:'ADMINISTRADOR',
+    region:6,
+    comuna:'Providencia',
+    direccion:'Camino de los Vientos 214, Providencia'
+  };
+
+  /* Se engancha a 'load' y no a 'DOMContentLoaded' para correr DESPUES de
+     que inicializarRegiones() haya llenado el <select> de regiones. */
+  window.addEventListener('load', () => {
+    document.getElementById('run').value          = USUARIO_DEMO.run;
+    document.getElementById('nombre').value       = USUARIO_DEMO.nombre;
+    document.getElementById('apellidos').value    = USUARIO_DEMO.apellidos;
+    document.getElementById('correo').value       = USUARIO_DEMO.correo;
+    document.getElementById('nacimiento').value   = USUARIO_DEMO.nacimiento;
+    document.getElementById('tipo-usuario').value = USUARIO_DEMO.tipo;
+    document.getElementById('direccion').value    = USUARIO_DEMO.direccion;
+
+    const region = document.getElementById('region');
+    region.value = USUARIO_DEMO.region;
+    /* Disparo manual del evento 'change': asignar .value por JS no lo
+       dispara solo. Sin esta linea, #comuna seguiria vacio y deshabilitado. */
+    region.dispatchEvent(new Event('change'));
+    document.getElementById('comuna').value = USUARIO_DEMO.comuna;
+  });
+</script>
+
+</body>
+</html>

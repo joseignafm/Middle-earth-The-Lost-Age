@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Usuarios — Panel del Maestro</title>
+
+<!-- Tipografías del reino: copia local, sin salir a internet -->
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
+
+<!-- Bootstrap 5.3.3 local. Va PRIMERO: styles.css lo personaliza después -->
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="region-orthanc">
+
+<!-- =========================================================
+     admin/usuarios.html — MANTENEDOR DE USUARIOS — listado de cuentas.
+       Carga  : NINGUN .js externo, solo un script inline con confirmarBorrado().
+       Entra de: menu lateral del panel
+       Sale a : usuario-nuevo.html · usuario-editar.html
+       DIFERENCIA IMPORTANTE con productos.html: aqui la tabla esta ESCRITA A MANO
+       en el HTML. No existe un arreglo USUARIOS en JS, asi que no hay una fuente
+       unica de datos: agregar un usuario es agregar un <tr> a este archivo.
+     ========================================================= -->
+
+<div class="admin-layout">
+
+  <!-- ===== MENU LATERAL DEL PANEL =====
+       Bloque IDENTICO en las 7 paginas de admin.
+         .rail            columna fija del panel (ver css/admin.css)
+         .offcanvas-lg    Bootstrap: bajo 992px deja de ser columna fija y
+                          pasa a ser un panel deslizante; sobre 992px se ve
+                          siempre y el boton "Menu del panel" queda oculto
+         #rail-admin      lo abre el boton via data-bs-target="#rail-admin"
+         .navitem.active  marca en que pagina estas (se pone a mano por archivo)
+       ==================================== -->
+  <nav class="rail offcanvas-lg offcanvas-start" tabindex="-1" id="rail-admin" aria-label="Menú de administración">
+    <div class="rail-brand">
+      <p class="rail-mark">Middle-earth: the lost age</p>
+      <h1>Panel del Maestro</h1>
+      <p class="sub">administración del reino</p>
+    </div>
+
+    <a class="navitem" href="index.html">Inicio</a>
+
+    <p class="rail-group">Catálogo</p>
+    <a class="navitem" href="productos.html">Productos</a>
+    <a class="navitem" href="producto-nuevo.html">Nuevo producto</a>
+
+    <p class="rail-group">Personas</p>
+    <a class="navitem active" href="usuarios.html">Usuarios</a>
+    <a class="navitem" href="usuario-nuevo.html">Nuevo usuario</a>
+
+    <div class="rail-foot">
+      <a class="navitem" href="../index.html">Volver a la tienda</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- Acciones del panel: el menú lateral solo aparece bajo 992px
+         (.d-lg-none); el botón verde de salida se ve siempre. -->
+    <div class="admin-acciones">
+      <button class="btn btn-linea btn-sm d-lg-none" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#rail-admin" aria-controls="rail-admin">
+        Menú del panel
+      </button>
+      <a class="btn btn-verde btn-sm" href="../index.html">← Volver a la tienda</a>
+    </div>
+
+
+    <div class="admin-top">
+      <div>
+        <p class="eyebrow">Mantenedor</p>
+        <h1>Usuarios</h1>
+        <p class="lede">Cuentas registradas en el reino y su nivel de acceso.</p>
+      </div>
+      <a class="btn btn-oro" href="usuario-nuevo.html">Nuevo usuario</a>
+    </div>
+
+    <div class="table-card">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>RUN</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Región</th>
+            <th>Tipo</th>
+            <th class="acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">190110222</td>
+            <td>Elanor Hojagris</td>
+            <td class="mono">elanor@duoc.cl</td>
+            <td>Metropolitana</td>
+            <td><span class="badge ok">Administrador</span></td>
+            <td class="acciones">
+              <a href="usuario-editar.html?run=190110222">editar</a>
+              <a href="#" class="borrar" onclick="return confirmarBorrado('Elanor Hojagris')">borrar</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="mono">174563217</td>
+            <td>Thorin Piedraforja</td>
+            <td class="mono">thorin@gmail.com</td>
+            <td>Valparaíso</td>
+            <td><span class="badge">Vendedor</span></td>
+            <td class="acciones">
+              <a href="usuario-editar.html?run=174563217">editar</a>
+              <a href="#" class="borrar" onclick="return confirmarBorrado('Thorin Piedraforja')">borrar</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="mono">201145899</td>
+            <td>Mirien Lunablanca</td>
+            <td class="mono">mirien@duoc.cl</td>
+            <td>Biobío</td>
+            <td><span class="badge">Cliente</span></td>
+            <td class="acciones">
+              <a href="usuario-editar.html?run=201145899">editar</a>
+              <a href="#" class="borrar" onclick="return confirmarBorrado('Mirien Lunablanca')">borrar</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="mono">158794233</td>
+            <td>Borin Martillo</td>
+            <td class="mono">borin@gmail.com</td>
+            <td>La Araucanía</td>
+            <td><span class="badge">Cliente</span></td>
+            <td class="acciones">
+              <a href="usuario-editar.html?run=158794233">editar</a>
+              <a href="#" class="borrar" onclick="return confirmarBorrado('Borin Martillo')">borrar</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="mono">214567806</td>
+            <td>Saelind del Alba</td>
+            <td class="mono">saelind@profesor.duoc.cl</td>
+            <td>Los Lagos</td>
+            <td><span class="badge">Vendedor</span></td>
+            <td class="acciones">
+              <a href="usuario-editar.html?run=214567806">editar</a>
+              <a href="#" class="borrar" onclick="return confirmarBorrado('Saelind del Alba')">borrar</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="paginacion">
+        <button type="button">«</button>
+        <button type="button" class="active">1</button>
+        <button type="button">2</button>
+        <button type="button">»</button>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+
+<!-- INLINE. Esta pagina no carga ningun .js externo. -->
+<script>
+  /* Igual que el de productos.html. Devuelve false para que el
+     <a href="#"> del enlace "borrar" no navegue. */
+  function confirmarBorrado(nombre){
+    alert('En esta etapa el borrado no está conectado. Se eliminaría: ' + nombre);
+    return false;
+  }
+</script>
+
+</body>
+</html>
